@@ -1,8 +1,13 @@
-import { View, Text, Button, FlatList, ScrollView, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, Button, FlatList, ScrollView, StyleSheet, Alert} from 'react-native';
+import Rutina from '../components/rutinas';
 
 const daysOfWeek = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
 
 export default function Rutinas() {
+  const handlePress = (titulo) => {
+    Alert.alert(`Has pulsado la rutina: ${titulo}`);
+  };
+
   return (
     <View style={styles.container}>
     {/* Primer componente: Botón + Grid */}
@@ -18,13 +23,10 @@ export default function Rutinas() {
     </View>
 
       {/* Segundo componente: Scroll List */}
-      <ScrollView style={styles.scrollList}>
-        {/* Aquí puedes renderizar los elementos de la lista */}
-        {[...Array(20)].map((_, index) => (
-          <View key={index} style={styles.listItem}>
-            <Text>Elemento {index + 1}</Text>
-          </View>
-        ))}
+      <ScrollView style={{ flex: 1 }}>
+        <Rutina titulo="Hacer ejercicio" hora="07:00 AM" imagen="https://example.com/imagen1.jpg" onPress={() => handlePress("Hacer ejercicio")} />
+        <Rutina titulo="Desayuno" hora="08:00 AM" imagen="https://example.com/imagen2.jpg" onPress={() => handlePress("Desayuno")} />
+        <Rutina titulo="Reunión de trabajo" hora="09:00 AM" imagen="https://example.com/imagen3.jpg" onPress={() => handlePress("Reunión de trabajo")} />
       </ScrollView>
     </View>
   );
