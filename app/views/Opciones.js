@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import Checkbox from 'expo-checkbox'; // Asegúrate de instalar expo-checkbox
+import { useNavigation } from '@react-navigation/native';
 
 const Opciones = () => {
+  const navigation = useNavigation();
+
   // Estados para manejar los checkboxes
   const [vibracion, setVibracion] = useState(false);
   const [modoOscuro, setModoOscuro] = useState(false);
@@ -11,7 +14,7 @@ const Opciones = () => {
 
   // Maneja el toque en el botón "Volver"
   const handleBackPress = () => {
-    Alert.alert('Volver', 'Botón volver presionado');
+    navigation.navigate('_sitemap');
   };
 
   return (
@@ -68,6 +71,7 @@ const styles = StyleSheet.create({
     padding: 10,
     alignItems: 'center', // Centra los contenidos horizontalmente
     justifyContent: 'center', // Centra los contenidos verticalmente
+    marginTop: 60,
   },
   header: {
     flexDirection: 'row',

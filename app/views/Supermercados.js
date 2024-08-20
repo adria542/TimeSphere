@@ -1,10 +1,28 @@
 import React, { useState } from 'react';
-import { Text, View, StyleSheet, Button, TouchableOpacity, ScrollView } from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import Supermercado from '../components/supermercados';
 import Compra from '../components/compra';
+import { useNavigation } from '@react-navigation/native';
+import { MaterialIcons } from '@expo/vector-icons';
 
 export default function Supermercados() {
   const [selectedButton, setSelectedButton] = useState('left'); // Estado para seguir el botón seleccionado
+  const navigation = useNavigation();
+
+  const handlePress = () => {
+    // Navega a la pantalla RutinaActiva
+    navigation.navigate('views/Filtros');
+  };
+
+  const handleCompra = () => {
+    // Navega a la pantalla RutinaActiva
+    navigation.navigate('views/ListasDeLaCompra');
+  };
+
+  const handlePressOptions = () => {
+    // Navega a la pantalla RutinaActiva
+    navigation.navigate('views/Opciones');
+  };
 
   // Datos de supermercados
   const supermercados = [
@@ -27,7 +45,9 @@ export default function Supermercados() {
   return (
     <View style={styles.container}>
       <View style={styles.topComponent}>
-        <Button title="" onPress={() => alert('Botón presionado')} />
+        <TouchableOpacity style={styles.backButton} onPress={handlePressOptions}>
+          <MaterialIcons name="settings" size={24} color="blue" />
+        </TouchableOpacity>
       </View>
       <View style={styles.topComponent}>
         {/* Botón izquierdo */}
@@ -53,7 +73,7 @@ export default function Supermercados() {
       {selectedButton !== 'right' && (
         <View>
           <TouchableOpacity 
-            style={[styles.button, styles.rightButton]}
+            style={[styles.button, styles.rightButton]} onPress={handlePress}
           >
             <Text style={{ color: 'gray' }}>
               Filtros
@@ -77,6 +97,7 @@ export default function Supermercados() {
               <Compra
                 key={index}
                 titulo={compra}
+                onPress={handleCompra}
               />
             ))
           )}
@@ -89,6 +110,7 @@ export default function Supermercados() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginTop: 60,
   },
   topComponent: {
     flexDirection: 'row',

@@ -1,14 +1,9 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
-const Compra = ({ titulo }) => {
-  // Función que maneja el toque
-  const handlePress = () => {
-    Alert.alert('Compra seleccionada', `Has seleccionado: ${titulo}`);
-  };
-
+const Compra = ({ titulo, onPress }) => {
   return (
-    <TouchableOpacity style={styles.compraContainer} onPress={handlePress}>
+    <TouchableOpacity style={styles.compraContainer} onPress={onPress}>
       <Text style={styles.titulo}>{titulo}</Text>
     </TouchableOpacity>
   );

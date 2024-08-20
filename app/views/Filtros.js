@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import Checkbox from 'expo-checkbox';
+import { useNavigation } from '@react-navigation/native';
 
 const Filtros = () => {
+  const navigation = useNavigation();
+  
   // Estado para manejar los checkboxes
   const [checkedItems, setCheckedItems] = useState({});
 
   // Maneja el toque en el botón "Volver"
   const handleBackPress = () => {
-    Alert.alert('Volver', 'Botón volver presionado');
+    navigation.navigate('_sitemap');
   };
 
   // Maneja el cambio en el checkbox
@@ -57,6 +60,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
+    marginTop: 60,
   },
   header: {
     flexDirection: 'row',

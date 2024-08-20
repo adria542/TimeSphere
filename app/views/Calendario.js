@@ -1,20 +1,32 @@
-import { Text, View, StyleSheet, Button,  TouchableOpacity} from "react-native";
+import { Text, View, StyleSheet, TouchableOpacity} from "react-native";
 import React, { useState } from 'react';
 import { Calendar } from 'react-native-calendars';
+import { useNavigation } from '@react-navigation/native';
+import { MaterialIcons } from '@expo/vector-icons';
 
 
 export default function Calendario() {
+  const navigation = useNavigation();
+
   const [selectedButton, setSelectedButton] = useState('left'); // Estado para seguir el botón seleccionado
   const [selectedDate, setSelectedDate] = useState('');
 
   const onDayPress = (day) => {
     setSelectedDate(day.dateString);
-    alert(`Has seleccionado el día ${day.dateString}`);
+    navigation.navigate('views/Diario')
   };
+
+  const handlePressOptions = () => {
+    // Navega a la pantalla RutinaActiva
+    navigation.navigate('views/Opciones');
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.topComponent}>
-        <Button title="" onPress={() => alert('Botón presionado')} />
+        <TouchableOpacity style={styles.backButton} onPress={handlePressOptions}>
+        <MaterialIcons name="settings" size={24} color="blue" />
+        </TouchableOpacity>
       </View>
       <View style={styles.topComponent}>
         {/* Botón izquierdo */}
@@ -51,6 +63,7 @@ export default function Calendario() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginTop: 60,
   },
   topComponent: {
     flexDirection: 'row',
