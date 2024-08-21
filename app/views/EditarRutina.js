@@ -23,6 +23,10 @@ const EditarRutina = () => {
     navigation.navigate('_sitemap');
   };
 
+  const handleRutinaPress = () => {
+    navigation.navigate('views/CrearRutina');
+  };
+
   return (
     <View style={styles.container}>
     <View style={styles.header}>
@@ -30,13 +34,14 @@ const EditarRutina = () => {
         <Text style={styles.backButtonText}>Volver</Text>
       </TouchableOpacity>
     </View>
+    <TouchableOpacity onPress={handleRutinaPress}>
       <Text style={styles.title}>Título de la Rutina</Text>
       
       <Text style={styles.subtitle}>
         Hora de Inicio: 08:00 AM {'\n'}
         Hora Final: 09:00 AM
       </Text>
-
+    </TouchableOpacity>
       <ScrollView style={styles.activityList}>
         {actividades.map(actividad => (
           <TouchableOpacity key={actividad.id} onPress={() => handleActivityPress(actividad)}>
