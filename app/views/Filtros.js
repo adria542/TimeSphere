@@ -5,6 +5,8 @@ import { useNavigation } from '@react-navigation/native';
 
 const Filtros = () => {
   const navigation = useNavigation();
+  const isDarkMode = false;
+  const styles = isDarkMode ? darkStyles : lightStyles;
   
   // Estado para manejar los checkboxes
   const [checkedItems, setCheckedItems] = useState({});
@@ -56,7 +58,7 @@ const Filtros = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const lightStyles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
@@ -101,5 +103,49 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
 });
-
+const darkStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 10,
+    marginTop: 60,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center', // Centra horizontalmente
+    marginBottom: 20,
+  },
+  backButton: {
+    position: 'absolute',
+    left: 10,
+    padding: 10,
+  },
+  backButtonText: {
+    color: '#007BFF',
+    fontSize: 16,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center', // Asegura que el título esté centrado en su contenedor
+  },
+  accesibilidadContainer: {
+    flex: 1,
+    alignItems: 'center', // Centra los filtros horizontalmente
+  },
+  accesibilidadRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '80%', // Ajusta el ancho según tus necesidades
+    marginBottom: 10,
+    justifyContent: 'space-between', // Espacia el texto y el checkbox
+  },
+  accesibilidadText: {
+    fontSize: 16,
+    flex: 1,
+  },
+  checkbox: {
+    marginLeft: 10,
+  },
+});
 export default Filtros;

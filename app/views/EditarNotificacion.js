@@ -14,6 +14,8 @@ export default function EditarNotificacion() {
   const [textoNotificacion, setTextoNotificacion] = useState('');
   const [sonidoActivado, setSonidoActivado] = useState(false);
   const [vibracionActivada, setVibracionActivada] = useState(false);
+  const isDarkMode = false;
+  const styles = isDarkMode ? darkStyles : lightStyles;
 
   const handleGuardar = () => {
     // Aquí puedes manejar la lógica para guardar la configuración de la notificación
@@ -76,7 +78,7 @@ export default function EditarNotificacion() {
   );
 }
 
-const styles = StyleSheet.create({
+const lightStyles = StyleSheet.create({
     container: {
       flex: 1,
       padding: 20,
@@ -132,4 +134,61 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
+});
+const darkStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+    paddingTop: 70,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center', // Centra horizontalmente
+    marginBottom: 20,
+  },
+  backButton: {
+    left: 0,
+    marginBottom: 20,
+  },
+  backButtonText: {
+    color: '#007BFF',
+    fontSize: 16,
+  },
+title: {
+  fontSize: 24,
+  fontWeight: '600',
+  marginBottom: 20,
+  textAlign: 'center',
+},
+sectionOptions: {
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  marginVertical: 20,
+},
+label: {
+  fontSize: 18,
+  fontWeight: '600',
+  marginBottom: 10,
+},
+input: {
+  borderWidth: 1,
+  borderColor: '#ccc',
+  borderRadius: 5,
+  padding: 10,
+  fontSize: 16,
+},
+doneButton: {
+  backgroundColor: '#007BFF',
+  padding: 15,
+  borderRadius: 5,
+  alignItems: 'center',
+  marginTop: 20,
+},
+doneButtonText: {
+  color: '#fff',
+  fontSize: 16,
+  fontWeight: '600',
+},
 });

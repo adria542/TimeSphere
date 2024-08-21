@@ -10,6 +10,8 @@ export default function CrearRutina() {
   const [horaInicio, setHoraInicio] = useState(new Date());
   const [mostrarHoraPicker, setMostrarHoraPicker] = useState(false);
   const [notificacionesActivadas, setNotificacionesActivadas] = useState(false);
+  const isDarkMode = false;
+  const styles = isDarkMode ? darkStyles : lightStyles;
 
   const onChangeHora = (event, selectedDate) => {
     const currentDate = selectedDate || horaInicio;
@@ -102,7 +104,96 @@ export default function CrearRutina() {
   );
 }
 
-const styles = StyleSheet.create({
+const lightStyles = StyleSheet.create({
+  container: {
+    flexGrow: 1,
+    padding: 20,
+    backgroundColor: '#fff',
+    justifyContent: 'center', // Distribuye el contenido
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center', // Centra horizontalmente
+    marginBottom: 20,
+  },
+  backButton: {
+    position: 'absolute',
+    top: 70,
+    left: 20,
+    marginBottom: 20,
+  },
+  backButtonText: {
+    color: '#007BFF',
+    fontSize: 16,
+  },
+  label: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 10,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 10,
+    fontSize: 16,
+    marginBottom: 20,
+  },
+  section: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginVertical: 20,
+  },
+  timePickerButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 10,
+    maxWidth: '70%',
+  },
+  timeText: {
+    fontSize: 16,
+    marginLeft: 10,
+  },
+  switch: {
+    marginRight: 20,
+  },
+  modifyNotificationButtonContainer: {
+    minHeight: 50, // Reserva espacio para el botón
+    justifyContent: 'center', // Centra verticalmente el botón
+  },
+  hidden: {
+    opacity: 0, // Oculta el botón pero reserva el espacio
+  },
+  modifyNotificationButton: {
+    backgroundColor: '#007BFF',
+    padding: 15,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  modifyNotificationText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  doneButton: {
+    backgroundColor: '#28A745',
+    padding: 15,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  doneButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+});
+const darkStyles = StyleSheet.create({
   container: {
     flexGrow: 1,
     padding: 20,

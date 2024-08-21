@@ -21,6 +21,9 @@ export default function Calendario() {
     navigation.navigate('views/Opciones');
   };
 
+  const isDarkMode = false;
+  const styles = isDarkMode ? darkStyles : lightStyles;
+
   return (
     <View style={styles.container}>
       <View style={styles.topComponent}>
@@ -60,7 +63,32 @@ export default function Calendario() {
     </View>
   );
 }
-const styles = StyleSheet.create({
+
+const lightStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    marginTop: 60,
+  },
+  topComponent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between', // Para separar los botones
+    padding: 10,
+  },
+  button: {
+    padding: 10,
+    alignItems: 'center',
+    width: '40%',
+  },
+  leftButton: {
+    alignSelf: 'flex-start',
+  },
+  rightButton: {
+    alignSelf: 'flex-end',
+  },
+});
+
+const darkStyles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: 60,

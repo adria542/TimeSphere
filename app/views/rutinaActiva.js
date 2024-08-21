@@ -10,6 +10,8 @@ const RutinaActiva = () => {
   const handleBackPress = () => {
     navigation.navigate('_sitemap');
   };
+  const isDarkMode = false;
+  const styles = isDarkMode ? darkStyles : lightStyles;
 
   return (
     <View style={styles.container}>
@@ -55,7 +57,7 @@ const RutinaActiva = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const lightStyles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
@@ -109,4 +111,57 @@ const styles = StyleSheet.create({
   },
 });
 
+const darkStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 10,
+    alignItems: 'center', // Centra horizontalmente el contenido
+    justifyContent: 'center', // Centra verticalmente el contenido
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center', // Centra horizontalmente
+    marginBottom: 20,
+    width: '100%', // Asegura que el header ocupe todo el ancho disponible
+  },
+  backButton: {
+    position: 'absolute',
+    left: 10,
+    padding: 10,
+  },
+  backButtonText: {
+    color: '#007BFF',
+    fontSize: 16,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center', // Asegura que el título esté centrado en su contenedor
+  },
+  image: {
+    width: 300,
+    height: 300,
+    marginBottom: 20,
+    resizeMode: 'cover', // Ajusta la imagen para cubrir el contenedor
+  },
+  time: {
+    fontSize: 40,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  iconsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '60%', // Ajusta el ancho según tus necesidades
+  },
+  iconButton: {
+    padding: 10,
+  },
+  icon: {
+    width: 50,
+    height: 50,
+    resizeMode: 'contain', // Mantiene la proporción de la imagen
+  },
+});
 export default RutinaActiva;

@@ -19,6 +19,8 @@ export default function Rutinas() {
   const handlePressPlus = () => {
     navigation.navigate('views/CrearRutina');
   };
+  const isDarkMode = false;
+  const styles = isDarkMode ? darkStyles : lightStyles;
 
   return (
     <View style={styles.container}>
@@ -57,7 +59,44 @@ export default function Rutinas() {
   );
 }
 
-const styles = StyleSheet.create({
+const lightStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    marginTop: 60,
+  },
+  topComponent: {
+    flexDirection: 'row',
+    padding: 10,
+  },
+  grid: {
+    flexGrow: 0, // Ajusta el tamaño del grid al contenido
+    borderWidth: 2,
+  },
+  gridContentContainer: {
+    justifyContent: 'center', // Mueve aquí el estilo de disposición
+  },
+  dayItem: {
+    fontSize: 13,
+    paddingHorizontal: 7.5,
+    paddingVertical: 5,
+    textAlign: 'center',
+  },
+  dayItemBorder: {
+    borderRightWidth: 1,
+  },
+  scrollContentContainer: {
+    flexGrow: 1, // Asegura que el ScrollView se expanda correctamente
+  },
+  plusButton: {
+    margin: 20,
+    size: 0,
+    alignSelf: 'flex-end',
+    backgroundColor: 'blue',
+    borderRadius: 30,
+  },
+});
+
+const darkStyles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: 60,

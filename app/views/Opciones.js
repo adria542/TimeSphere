@@ -7,15 +7,16 @@ const Opciones = () => {
   const navigation = useNavigation();
 
   // Estados para manejar los checkboxes
-  const [vibracion, setVibracion] = useState(false);
+  const [vibracion, setVibracion] = useState(true);
   const [modoOscuro, setModoOscuro] = useState(false);
-  const [modoDaltonico, setModoDaltonico] = useState(false);
-  const [sonido, setSonido] = useState(false); // Valor inicial del control deslizante
+  const [sonido, setSonido] = useState(true); // Valor inicial del control deslizante
 
   // Maneja el toque en el botón "Volver"
   const handleBackPress = () => {
     navigation.navigate('_sitemap');
   };
+  const isDarkMode = false;
+  const styles = isDarkMode ? darkStyles : lightStyles;
 
   return (
     <View style={styles.container}>
@@ -52,20 +53,12 @@ const Opciones = () => {
             style={styles.checkbox}
           />
         </View>
-        <View style={styles.optionRow}>
-          <Text style={styles.optionText}>Modo Daltonico</Text>
-          <Checkbox
-            value={modoDaltonico}
-            onValueChange={setModoDaltonico}
-            style={styles.checkbox}
-          />
-        </View>
       </View>
     </View>
   );
 };
 
-const styles = StyleSheet.create({
+const lightStyles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
@@ -114,5 +107,53 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
 });
-
+const darkStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 10,
+    alignItems: 'center', // Centra los contenidos horizontalmente
+    justifyContent: 'center', // Centra los contenidos verticalmente
+    marginTop: 60,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center', // Centra horizontalmente
+    marginBottom: 20,
+    width: '100%', // Asegura que el header ocupe todo el ancho disponible
+  },
+  backButton: {
+    position: 'absolute',
+    left: 10,
+    padding: 10,
+  },
+  backButtonText: {
+    color: '#007BFF',
+    fontSize: 16,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center', // Asegura que el título esté centrado en su contenedor
+  },
+  optionsContainer: {
+    flex: 1,
+    alignItems: 'center', // Centra los filtros horizontalmente
+    width: '100%', // Asegura que el contenedor ocupe todo el ancho disponible
+  },
+  optionRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '80%', // Ajusta el ancho según tus necesidades
+    marginBottom: 10,
+    justifyContent: 'space-between', // Espacia el texto y el checkbox
+  },
+  optionText: {
+    fontSize: 16,
+    flex: 1,
+  },
+  checkbox: {
+    marginLeft: 10,
+  },
+});
 export default Opciones;

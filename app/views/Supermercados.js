@@ -23,6 +23,8 @@ export default function Supermercados() {
     // Navega a la pantalla RutinaActiva
     navigation.navigate('views/Opciones');
   };
+  const isDarkMode = false;
+  const styles = isDarkMode ? darkStyles : lightStyles;
 
   // Datos de supermercados
   const supermercados = [
@@ -113,7 +115,44 @@ export default function Supermercados() {
   );
 }
 
-const styles = StyleSheet.create({
+const lightStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    marginTop: 60,
+  },
+  topComponent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between', // Para separar los botones
+    padding: 10,
+  },
+  button: {
+    padding: 10,
+    alignItems: 'center',
+    width: '40%',
+  },
+  leftButton: {
+    alignSelf: 'flex-start',
+  },
+  rightButton: {
+    alignSelf: 'flex-end',
+  },
+  contenedorLista: {
+    flex: 1,
+    padding: 10,
+  },
+  lista: {
+    flex: 1,
+  },
+  plusButton: {
+    margin: 20,
+    size: 0,
+    alignSelf: 'flex-end',
+    backgroundColor: 'blue',
+    borderRadius: 30,
+  },
+});
+const darkStyles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: 60,

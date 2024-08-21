@@ -14,6 +14,7 @@ import CrearRutina from './views/CrearRutina';
 import EditarRutina from './views/EditarRutina';
 import EditarActividad from './views/EditarActividad';
 import EditarNotificacion from './views/EditarNotificacion';
+import EditarListaDeLaCompra from './views/EditarListaDeLaCompra';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -68,6 +69,7 @@ export default function RootLayout() {
       <Stack.Screen name="views/EditarRutina" component={EditarRutina} />
       <Stack.Screen name="views/EditarActividad" component={EditarActividad} />
       <Stack.Screen name="views/EditarNotificacion" component={EditarNotificacion} />
+      <Stack.Screen name="views/EditarListaDeLaCompra" component={EditarListaDeLaCompra} />
     </Stack.Navigator>
   );
 }

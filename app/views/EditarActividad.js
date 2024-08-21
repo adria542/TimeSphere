@@ -7,6 +7,8 @@ export default function EditarActividad() {
   const [titulo, setTitulo] = useState('Título de la Actividad');
   const [duracion, setDuracion] = useState(''); // Cambiado a string
   const [tipoActividad, setTipoActividad] = useState('Deporte');
+  const isDarkMode = false;
+  const styles = isDarkMode ? darkStyles : lightStyles;
 
   const tiposActividad = ['Deporte', 'Estudio', 'Relajación', 'Trabajo'];
 
@@ -79,7 +81,68 @@ export default function EditarActividad() {
   );
 }
 
-const styles = StyleSheet.create({
+const lightStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+    paddingTop: 60,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center', // Centra horizontalmente
+    marginBottom: 20,
+  },
+  backButton: {
+    left: 0,
+    marginBottom: 20,
+  },
+  backButtonText: {
+    color: '#007BFF',
+    fontSize: 16,
+  },
+  image: {
+    width: '100%',
+    height: 150,
+    borderRadius: 8,
+    marginBottom: 20,
+  },
+  label: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 10,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 10,
+    fontSize: 16,
+    marginBottom: 20,
+  },
+  section: {
+    marginBottom: 20,
+  },
+  picker: {
+    height: 50,
+    width: '100%',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+  },
+  saveButton: {
+    backgroundColor: '#007BFF',
+    padding: 15,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  saveButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+});
+const darkStyles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,

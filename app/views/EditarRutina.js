@@ -27,6 +27,9 @@ const EditarRutina = () => {
     navigation.navigate('views/CrearRutina');
   };
 
+  const isDarkMode = false;
+  const styles = isDarkMode ? darkStyles : lightStyles;
+
   return (
     <View style={styles.container}>
     <View style={styles.header}>
@@ -75,7 +78,70 @@ const EditarRutina = () => {
 
 
 
-const styles = StyleSheet.create({
+const lightStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+    marginTop: 60,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center', // Centra horizontalmente
+    marginBottom: 20,
+  },
+  backButton: {
+    position: 'absolute',
+    left: 0,
+  },
+  backButtonText: {
+    color: '#007BFF',
+    fontSize: 16,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    paddingTop: 30,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: '#555',
+    marginBottom: 40,
+  },
+  activityList: {
+    flex: 1,
+  },
+  footer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  addButton: {
+    backgroundColor: '#007BFF',
+    padding: 15,
+    borderRadius: 5,
+    alignItems: 'center',
+    width: 'auto',
+    height: 'auto',
+  },
+  playButton: {
+    backgroundColor: '#28A745',
+    padding: 15,
+    borderRadius: 5,
+    alignItems: 'center',
+    width: 'auto',
+    height: 'auto',
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+});
+const darkStyles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
