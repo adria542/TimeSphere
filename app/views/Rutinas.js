@@ -8,12 +8,16 @@ const daysOfWeek = ['1 LUN', '2 MAR', '3 MIE', '4 JUE', '5 VIE', '6 SAB', '7 DOM
 export default function Rutinas() {
   const navigation = useNavigation();
 
-  const handlePress = (titulo) => {
-    navigation.navigate('views/rutinaActiva');
+  const handlePress = () => {
+    navigation.navigate('views/EditarRutina');
   };
 
   const handlePressOptions = () => {
     navigation.navigate('views/Opciones');
+  };
+
+  const handlePressPlus = () => {
+    navigation.navigate('views/CrearRutina');
   };
 
   return (
@@ -43,6 +47,12 @@ export default function Rutinas() {
         <Rutina titulo="Desayuno" hora="08:00 AM" imagen="https://example.com/imagen2.jpg" onPress={() => handlePress("Desayuno")} />
         <Rutina titulo="Reunión de trabajo" hora="09:00 AM" imagen="https://example.com/imagen3.jpg" onPress={() => handlePress("Reunión de trabajo")} />
       </ScrollView>
+      
+      {/* botón + */}
+      <TouchableOpacity style={styles.plusButton} onPress={handlePressPlus}>
+        <MaterialIcons name="add" size={44} color="white" />
+      </TouchableOpacity>
+
     </View>
   );
 }
@@ -74,5 +84,12 @@ const styles = StyleSheet.create({
   },
   scrollContentContainer: {
     flexGrow: 1, // Asegura que el ScrollView se expanda correctamente
+  },
+  plusButton: {
+    margin: 20,
+    size: 0,
+    alignSelf: 'flex-end',
+    backgroundColor: 'blue',
+    borderRadius: 30,
   },
 });

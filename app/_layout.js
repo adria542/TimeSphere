@@ -10,6 +10,10 @@ import Filtros from './views/Filtros';
 import Opciones from './views/Opciones';
 import RutinaActiva from './views/rutinaActiva';
 import ListasDeLaCompra from './views/ListasDeLaCompra';
+import CrearRutina from './views/CrearRutina';
+import EditarRutina from './views/EditarRutina';
+import EditarActividad from './views/EditarActividad';
+import EditarNotificacion from './views/EditarNotificacion';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -60,6 +64,10 @@ export default function RootLayout() {
       <Stack.Screen name="views/Supermercados" component={Supermercados} />
       <Stack.Screen name="views/Opciones" component={Opciones} />
       <Stack.Screen name="views/ListasDeLaCompra" component={ListasDeLaCompra} />
+      <Stack.Screen name="views/CrearRutina" component={CrearRutina} />
+      <Stack.Screen name="views/EditarRutina" component={EditarRutina} />
+      <Stack.Screen name="views/EditarActividad" component={EditarActividad} />
+      <Stack.Screen name="views/EditarNotificacion" component={EditarNotificacion} />
     </Stack.Navigator>
   );
 }

@@ -103,6 +103,12 @@ export default function Supermercados() {
           )}
         </ScrollView>
       </View>
+      {/* botón + */}
+      {selectedButton !== 'left' && (
+          <TouchableOpacity style={styles.plusButton} onPress={handleCompra}>
+            <MaterialIcons name="add" size={44} color="white" />
+          </TouchableOpacity>
+        )}
     </View>
   );
 }
@@ -135,5 +141,12 @@ const styles = StyleSheet.create({
   },
   lista: {
     flex: 1,
+  },
+  plusButton: {
+    margin: 20,
+    size: 0,
+    alignSelf: 'flex-end',
+    backgroundColor: 'blue',
+    borderRadius: 30,
   },
 });
