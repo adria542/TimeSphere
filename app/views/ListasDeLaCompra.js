@@ -1,106 +1,91 @@
 import React, { useState } from 'react';
-import { View, Text, Image, TouchableOpacity, TextInput, StyleSheet, Button } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Button } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import Articulo from '../components/articulo'; // Ajusta la ruta según tu estructura de archivos
 
-export default function Diario() {
+export default function ListasDeLaCompra() {
   const navigation = useNavigation();
 
-  const [estadoEmocional, setEstadoEmocional] = useState('../components/Asests/CaraFeliz.png'); // Estado para guardar la emoción seleccionada
-  const [textoDiario, setTextoDiario] = useState(''); // Estado para guardar el texto del diario
+  const [articulos, setArticulos] = useState([
+    { id: '1', nombre: 'Manzanas', imageSource: 'https://via.placeholder.com/50?text=Manzana' },
+    { id: '2', nombre: 'Pan', imageSource: 'https://via.placeholder.com/50?text=Pan' },
+    { id: '3', nombre: 'Leche', imageSource: 'https://via.placeholder.com/50?text=Leche' },
+    { id: '4', nombre: 'Huevos', imageSource: 'https://via.placeholder.com/50?text=Huevos' },
+  ]);
 
   const handleBackPress = () => {
+    navigation.navigate('_sitemap');
+  };
+
+  const handleListoPress = () => {
     navigation.navigate('_sitemap');
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.topComponent}>
-      <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>
+        <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>
           <Text style={styles.backButtonText}>Volver</Text>
         </TouchableOpacity>
       </View>
-      {/* Título con la fecha */}
-      <Text style={styles.fechaTitulo}>Titulo compra</Text>
-
-      {/* Sección del Diario */}
-      <View style={styles.diarioSection}>
-        <Text style={styles.titulo}>Compra</Text>
-        <TextInput
-          style={styles.diarioInput}
-          multiline={true}
-          placeholder="Escribe aquí tu diario..."
-          value={textoDiario}
-          onChangeText={setTextoDiario}
-        />
-      </View>
+      <Text style={styles.titulo}>Lista de la Compra</Text>
+      <ScrollView style={styles.articulosContainer}>
+        {articulos.map((articulo) => (
+          <Articulo
+            key={articulo.id}
+            imageSource={{ uri: articulo.imageSource }}
+            nombreArticulo={articulo.nombre}
+          />
+        ))}
+      </ScrollView>
+      <TouchableOpacity style={styles.botonListo} onPress={handleListoPress}>
+        <Text style={styles.botonListoText}>Listo</Text>
+      </TouchableOpacity>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-   topComponent: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between', // Para separar los botones
-      padding: 10,
-    },
-    backButton: {
-      position: 'absolute',
-      left: 10,
-      padding: 10,
-    },
-    backButtonText: {
-      color: '#007BFF',
-      fontSize: 16,
-    },
+  topComponent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 10,
+  },
+  backButton: {
+    position: 'absolute',
+    left: 10,
+    padding: 10,
+  },
+  backButtonText: {
+    color: '#007BFF',
+    fontSize: 16,
+  },
   container: {
     flex: 1,
     padding: 20,
     marginTop: 40,
+    justifyContent: 'space-between', // Asegura que el botón "Listo" esté al fondo
   },
-  fechaTitulo: {
+  titulo: {
     fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 20,
   },
-  emocionalSection: {
-    marginBottom: 30,
-  },
-  titulo: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  emocionWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  emocionImagen: {
-    width: 50,
-    height: 50,
-    marginRight: 20,
-  },
-  seleccionEmocion: {
-    flexDirection: 'row',
-  },
-  iconoEmocion: {
-    width: 50,
-    height: 50,
-    marginHorizontal: 10,
-  },
-  diarioSection: {
+  articulosContainer: {
     flex: 1,
   },
-  diarioInput: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    backgroundColor: '#fff', // Fondo blanco
-    padding: 10,
-    fontSize: 16,
+  botonListo: {
+    backgroundColor: '#28A745',
+    padding: 15,
     borderRadius: 5,
-    textAlignVertical: 'top', // Para que el texto comience desde la parte superior
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  botonListoText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
