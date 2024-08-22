@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Switch, TouchableOpacity, StyleSheet, Platform, ScrollView,} from 'react-native';
+import { View, Text, TextInput, Switch, TouchableOpacity, StyleSheet, Platform, ScrollView } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { useTheme } from '../controllers/controladorContexto';
 
 export default function CrearRutina() {
   const navigation = useNavigation();
@@ -10,7 +11,7 @@ export default function CrearRutina() {
   const [horaInicio, setHoraInicio] = useState(new Date());
   const [mostrarHoraPicker, setMostrarHoraPicker] = useState(false);
   const [notificacionesActivadas, setNotificacionesActivadas] = useState(false);
-  const isDarkMode = false;
+  const { isDarkMode } = useTheme();
   const styles = isDarkMode ? darkStyles : lightStyles;
 
   const onChangeHora = (event, selectedDate) => {
@@ -39,15 +40,15 @@ export default function CrearRutina() {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-
-    <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>
-      <Text style={styles.backButtonText}>Volver</Text>
-    </TouchableOpacity>
+      <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>
+        <Text style={styles.backButtonText}>Volver</Text>
+      </TouchableOpacity>
 
       <Text style={styles.label}>Título de la Rutina:</Text>
       <TextInput
         style={styles.input}
         placeholder="Ingrese el título de la rutina"
+        placeholderTextColor={isDarkMode ? '#B0B0B0' : '#6e6e6e'} // Placeholder color en modo oscuro
         value={titulo}
         onChangeText={setTitulo}
       />
@@ -58,7 +59,7 @@ export default function CrearRutina() {
           style={styles.timePickerButton}
           onPress={() => setMostrarHoraPicker(true)}
         >
-          <MaterialIcons name="access-time" size={24} color="#000" />
+          <MaterialIcons name="access-time" size={24} color={styles.iconColor.color} />
           <Text style={styles.timeText}>
             {horaInicio.toLocaleTimeString([], {
               hour: '2-digit',
@@ -69,12 +70,14 @@ export default function CrearRutina() {
       </View>
 
       {mostrarHoraPicker && (
+        <View style={styles.pickerContainer}>
         <DateTimePicker
           value={horaInicio}
           mode="time"
           display="default"
           onChange={onChangeHora}
         />
+      </View>
       )}
 
       <View style={styles.section}>
@@ -111,12 +114,6 @@ const lightStyles = StyleSheet.create({
     backgroundColor: '#fff',
     justifyContent: 'center', // Distribuye el contenido
   },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center', // Centra horizontalmente
-    marginBottom: 20,
-  },
   backButton: {
     position: 'absolute',
     top: 70,
@@ -131,6 +128,7 @@ const lightStyles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
     marginBottom: 10,
+    color: '#000', // Color del texto
   },
   input: {
     borderWidth: 1,
@@ -139,6 +137,7 @@ const lightStyles = StyleSheet.create({
     padding: 10,
     fontSize: 16,
     marginBottom: 20,
+    color: '#000', // Color del texto del input
   },
   section: {
     flexDirection: 'row',
@@ -158,6 +157,7 @@ const lightStyles = StyleSheet.create({
   timeText: {
     fontSize: 16,
     marginLeft: 10,
+    color: '#000', // Color del texto de la hora
   },
   switch: {
     marginRight: 20,
@@ -192,19 +192,17 @@ const lightStyles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
+  iconColor: {
+    color: '#000', // Color del icono en modo claro
+  },
 });
+
 const darkStyles = StyleSheet.create({
   container: {
     flexGrow: 1,
     padding: 20,
-    backgroundColor: '#fff',
+    backgroundColor: '#121212', // Fondo oscuro
     justifyContent: 'center', // Distribuye el contenido
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center', // Centra horizontalmente
-    marginBottom: 20,
   },
   backButton: {
     position: 'absolute',
@@ -213,21 +211,24 @@ const darkStyles = StyleSheet.create({
     marginBottom: 20,
   },
   backButtonText: {
-    color: '#007BFF',
+    color: '#BB86FC', // Color del texto en modo oscuro
     fontSize: 16,
   },
   label: {
     fontSize: 18,
     fontWeight: '600',
     marginBottom: 10,
+    color: '#fff', // Color del texto en modo oscuro
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: '#333', // Color del borde en modo oscuro
     borderRadius: 5,
     padding: 10,
     fontSize: 16,
     marginBottom: 20,
+    color: '#fff', // Color del texto del input en modo oscuro
+    backgroundColor: '#1e1e1e', // Fondo del input en modo oscuro
   },
   section: {
     flexDirection: 'row',
@@ -239,7 +240,7 @@ const darkStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: '#333', // Color del borde en modo oscuro
     borderRadius: 5,
     padding: 10,
     maxWidth: '70%',
@@ -247,6 +248,7 @@ const darkStyles = StyleSheet.create({
   timeText: {
     fontSize: 16,
     marginLeft: 10,
+    color: '#fff', // Color del texto de la hora en modo oscuro
   },
   switch: {
     marginRight: 20,
@@ -259,7 +261,7 @@ const darkStyles = StyleSheet.create({
     opacity: 0, // Oculta el botón pero reserva el espacio
   },
   modifyNotificationButton: {
-    backgroundColor: '#007BFF',
+    backgroundColor: '#BB86FC', // Botón de notificación en modo oscuro
     padding: 15,
     borderRadius: 5,
     alignItems: 'center',
@@ -270,7 +272,7 @@ const darkStyles = StyleSheet.create({
     fontWeight: '600',
   },
   doneButton: {
-    backgroundColor: '#28A745',
+    backgroundColor: '#03DAC6', // Botón "Hecho" en modo oscuro
     padding: 15,
     borderRadius: 5,
     alignItems: 'center',
@@ -280,5 +282,8 @@ const darkStyles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
+  },
+  iconColor: {
+    color: '#fff', // Color del icono en modo oscuro
   },
 });

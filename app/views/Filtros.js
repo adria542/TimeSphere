@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import Checkbox from 'expo-checkbox';
 import { useNavigation } from '@react-navigation/native';
+import { useTheme } from '../controllers/controladorContexto';
 
 const Filtros = () => {
   const navigation = useNavigation();
-  const isDarkMode = false;
+  const { isDarkMode } = useTheme();
   const styles = isDarkMode ? darkStyles : lightStyles;
   
   // Estado para manejar los checkboxes
@@ -63,6 +64,7 @@ const lightStyles = StyleSheet.create({
     flex: 1,
     padding: 10,
     marginTop: 60,
+    backgroundColor: '#fff', // Fondo blanco
   },
   header: {
     flexDirection: 'row',
@@ -76,7 +78,7 @@ const lightStyles = StyleSheet.create({
     padding: 10,
   },
   backButtonText: {
-    color: '#007BFF',
+    color: '#007BFF', // Color del botón "Volver"
     fontSize: 16,
   },
   title: {
@@ -92,7 +94,7 @@ const lightStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     width: '80%', // Ajusta el ancho según tus necesidades
-    marginBottom: 10,
+    marginVertical: 10,
     justifyContent: 'space-between', // Espacia el texto y el checkbox
   },
   accesibilidadText: {
@@ -101,13 +103,16 @@ const lightStyles = StyleSheet.create({
   },
   checkbox: {
     marginLeft: 10,
+    transform: [{ scale: 1.5 }], // Agranda el checkbox
   },
 });
+
 const darkStyles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
-    marginTop: 60,
+    paddingTop: 75,
+    backgroundColor: '#121212', // Fondo negro
   },
   header: {
     flexDirection: 'row',
@@ -121,13 +126,14 @@ const darkStyles = StyleSheet.create({
     padding: 10,
   },
   backButtonText: {
-    color: '#007BFF',
+    color: '#BB86FC', // Color del botón "Volver"
     fontSize: 16,
   },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'center', // Asegura que el título esté centrado en su contenedor
+    color: '#fff', // Color del título en modo oscuro
   },
   accesibilidadContainer: {
     flex: 1,
@@ -137,15 +143,18 @@ const darkStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     width: '80%', // Ajusta el ancho según tus necesidades
-    marginBottom: 10,
+    marginVertical: 10,
     justifyContent: 'space-between', // Espacia el texto y el checkbox
   },
   accesibilidadText: {
     fontSize: 16,
     flex: 1,
+    color: '#fff', // Color del texto en modo oscuro
   },
   checkbox: {
     marginLeft: 10,
+    transform: [{ scale: 1.5 }], // Agranda el checkbox
   },
 });
+
 export default Filtros;

@@ -1,7 +1,8 @@
+// layout.js
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
-import { MaterialIcons } from '@expo/vector-icons'; // Asegúrate de tener instalada esta biblioteca
+import { MaterialIcons } from '@expo/vector-icons';
 import Rutinas from './views/Rutinas';
 import Calendario from './views/Calendario';
 import Supermercados from './views/Supermercados';
@@ -15,61 +16,63 @@ import EditarRutina from './views/EditarRutina';
 import EditarActividad from './views/EditarActividad';
 import EditarNotificacion from './views/EditarNotificacion';
 import EditarListaDeLaCompra from './views/EditarListaDeLaCompra';
+import { ThemeProvider, useTheme } from './controllers/controladorContexto'; // Asegúrate de que la ruta es correcta
+import { DayProvider, useDay } from './controllers/controladorContexto';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 function TabNavigator() {
+  const { isDarkMode } = useTheme();
+
   return (
-    <Tab.Navigator screenOptions={{ headerShown: false }}>
-      <Tab.Screen
-        name="Rutinas"
-        component={Rutinas}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <MaterialIcons name="fitness-center" color={color} size={size} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Calendario"
-        component={Calendario}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <MaterialIcons name="calendar-today" color={color} size={size} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Supermercados"
-        component={Supermercados}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <MaterialIcons name="store" color={color} size={size} />
-          ),
-        }}
-      />
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        headerShown: false,
+        tabBarIcon: ({ color, size }) => {
+          let iconName;
+          if (route.name === 'Rutinas') iconName = 'fitness-center';
+          else if (route.name === 'Calendario') iconName = 'calendar-today';
+          else if (route.name === 'Supermercados') iconName = 'store';
+
+          return <MaterialIcons name={iconName} color={color} size={size} />;
+        },
+        tabBarActiveTintColor: isDarkMode ? '#BB86FC' : 'blue',
+        tabBarInactiveTintColor: isDarkMode ? '#FFFFFF' : '#222222',
+        tabBarStyle: {
+          backgroundColor: isDarkMode ? '#121212' : '#FFFFFF',
+          borderTopColor: isDarkMode ? '#1F1F1F' : '#E0E0E0',
+        },
+      })}
+    >
+      <Tab.Screen name="Rutinas" component={Rutinas} />
+      <Tab.Screen name="Calendario" component={Calendario} />
+      <Tab.Screen name="Supermercados" component={Supermercados} />
     </Tab.Navigator>
   );
 }
 
 export default function RootLayout() {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="_sitemap" component={TabNavigator} />
-      <Stack.Screen name="views/rutinaActiva" component={RutinaActiva} />
-      <Stack.Screen name="views/Rutinas" component={Rutinas} />
-      <Stack.Screen name="views/Caledario" component={Calendario} />
-      <Stack.Screen name="views/Diario" component={Diario} />
-      <Stack.Screen name="views/Filtros" component={Filtros} />
-      <Stack.Screen name="views/Supermercados" component={Supermercados} />
-      <Stack.Screen name="views/Opciones" component={Opciones} />
-      <Stack.Screen name="views/ListasDeLaCompra" component={ListasDeLaCompra} />
-      <Stack.Screen name="views/CrearRutina" component={CrearRutina} />
-      <Stack.Screen name="views/EditarRutina" component={EditarRutina} />
-      <Stack.Screen name="views/EditarActividad" component={EditarActividad} />
-      <Stack.Screen name="views/EditarNotificacion" component={EditarNotificacion} />
-      <Stack.Screen name="views/EditarListaDeLaCompra" component={EditarListaDeLaCompra} />
-    </Stack.Navigator>
+    <DayProvider>
+      <ThemeProvider>
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="_sitemap" component={TabNavigator} />
+          <Stack.Screen name="views/rutinaActiva" component={RutinaActiva} />
+          <Stack.Screen name="views/Rutinas" component={Rutinas} />
+          <Stack.Screen name="views/Calendario" component={Calendario} />
+          <Stack.Screen name="views/Diario" component={Diario} />
+          <Stack.Screen name="views/Filtros" component={Filtros} />
+          <Stack.Screen name="views/Supermercados" component={Supermercados} />
+          <Stack.Screen name="views/Opciones" component={Opciones} />
+          <Stack.Screen name="views/ListasDeLaCompra" component={ListasDeLaCompra} />
+          <Stack.Screen name="views/CrearRutina" component={CrearRutina} />
+          <Stack.Screen name="views/EditarRutina" component={EditarRutina} />
+          <Stack.Screen name="views/EditarActividad" component={EditarActividad} />
+          <Stack.Screen name="views/EditarNotificacion" component={EditarNotificacion} />
+          <Stack.Screen name="views/EditarListaDeLaCompra" component={EditarListaDeLaCompra} />
+        </Stack.Navigator>
+      </ThemeProvider>
+    </DayProvider>
   );
 }

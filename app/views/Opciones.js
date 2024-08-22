@@ -1,21 +1,29 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import Checkbox from 'expo-checkbox'; // Asegúrate de instalar expo-checkbox
 import { useNavigation } from '@react-navigation/native';
+import { useTheme } from '../controllers/controladorContexto'; // Asegúrate de tener este hook correctamente implementado
 
 const Opciones = () => {
   const navigation = useNavigation();
+  const { isDarkMode, toggleTheme } = useTheme(); // Usa el contexto para obtener el estado del modo oscuro
 
   // Estados para manejar los checkboxes
   const [vibracion, setVibracion] = useState(true);
-  const [modoOscuro, setModoOscuro] = useState(false);
-  const [sonido, setSonido] = useState(true); // Valor inicial del control deslizante
+  const [sonido, setSonido] = useState(true);
+  const [modoOscuro, setModoOscuro] = useState(isDarkMode);
 
   // Maneja el toque en el botón "Volver"
   const handleBackPress = () => {
     navigation.navigate('_sitemap');
   };
-  const isDarkMode = false;
+
+  // Actualiza el estado del modo oscuro localmente
+  const handleModoOscuroChange = (value) => {
+    toggleTheme();
+  };
+
+  // Definición de estilos basada en el modo oscuro
   const styles = isDarkMode ? darkStyles : lightStyles;
 
   return (
@@ -34,7 +42,7 @@ const Opciones = () => {
           <Checkbox
             value={sonido}
             onValueChange={setSonido}
-            style={styles.checkbox} // Asegúrate de aplicar estilo al checkbox
+            style={styles.checkbox}
           />
         </View>
         <View style={styles.optionRow}>
@@ -48,8 +56,8 @@ const Opciones = () => {
         <View style={styles.optionRow}>
           <Text style={styles.optionText}>Modo Oscuro</Text>
           <Checkbox
-            value={modoOscuro}
-            onValueChange={setModoOscuro}
+            value={isDarkMode}
+            onValueChange={handleModoOscuroChange}
             style={styles.checkbox}
           />
         </View>
@@ -61,17 +69,17 @@ const Opciones = () => {
 const lightStyles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
-    alignItems: 'center', // Centra los contenidos horizontalmente
-    justifyContent: 'center', // Centra los contenidos verticalmente
-    marginTop: 60,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FFFFFF', // Fondo claro
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center', // Centra horizontalmente
-    marginBottom: 20,
-    width: '100%', // Asegura que el header ocupe todo el ancho disponible
+    justifyContent: 'center',
+    paddingTop: 80,
+    paddingBottom: 20,
+    width: '100%',
   },
   backButton: {
     position: 'absolute',
@@ -85,19 +93,20 @@ const lightStyles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: 'bold',
-    textAlign: 'center', // Asegura que el título esté centrado en su contenedor
+    textAlign: 'center',
   },
   optionsContainer: {
     flex: 1,
-    alignItems: 'center', // Centra los filtros horizontalmente
-    width: '100%', // Asegura que el contenedor ocupe todo el ancho disponible
+    marginTop: 40,
+    alignItems: 'center',
+    width: '100%',
   },
   optionRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    width: '80%', // Ajusta el ancho según tus necesidades
+    width: '80%',
     marginBottom: 10,
-    justifyContent: 'space-between', // Espacia el texto y el checkbox
+    justifyContent: 'space-between',
   },
   optionText: {
     fontSize: 16,
@@ -105,22 +114,27 @@ const lightStyles = StyleSheet.create({
   },
   checkbox: {
     marginLeft: 10,
+    width: 30, // Aumenta el tamaño del checkbox
+    height: 30, // Aumenta el tamaño del checkbox
   },
 });
+
 const darkStyles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
-    alignItems: 'center', // Centra los contenidos horizontalmente
-    justifyContent: 'center', // Centra los contenidos verticalmente
-    marginTop: 60,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#121212', // Fondo oscuro
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center', // Centra horizontalmente
-    marginBottom: 20,
-    width: '100%', // Asegura que el header ocupe todo el ancho disponible
+    justifyContent: 'center',
+    padding:10,
+    paddingTop: 80,
+    paddingBottom: 20,
+    width: '100%',
+    backgroundColor: '#1E1E1E', // Fondo un poco más claro para el componente superior
   },
   backButton: {
     position: 'absolute',
@@ -128,32 +142,38 @@ const darkStyles = StyleSheet.create({
     padding: 10,
   },
   backButtonText: {
-    color: '#007BFF',
+    color: '#BB86FC', // Color del texto en modo oscuro
     fontSize: 16,
   },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
-    textAlign: 'center', // Asegura que el título esté centrado en su contenedor
+    textAlign: 'center',
+    color: '#FFFFFF', // Color del título en modo oscuro
   },
   optionsContainer: {
     flex: 1,
-    alignItems: 'center', // Centra los filtros horizontalmente
-    width: '100%', // Asegura que el contenedor ocupe todo el ancho disponible
+    alignItems: 'center',
+    marginTop: 40,
+    width: '100%',
   },
   optionRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    width: '80%', // Ajusta el ancho según tus necesidades
+    width: '80%',
     marginBottom: 10,
-    justifyContent: 'space-between', // Espacia el texto y el checkbox
+    justifyContent: 'space-between',
   },
   optionText: {
     fontSize: 16,
     flex: 1,
+    color: '#FFFFFF', // Color del texto en modo oscuro
   },
   checkbox: {
     marginLeft: 10,
+    width: 30, // Aumenta el tamaño del checkbox
+    height: 30, // Aumenta el tamaño del checkbox
   },
 });
+
 export default Opciones;

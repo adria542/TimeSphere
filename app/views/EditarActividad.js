@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView} from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native';
 import { Picker } from '@react-native-picker/picker'; // Asegúrate de instalar este paquete
 import { useNavigation } from '@react-navigation/native';
+import { useTheme } from '../controllers/controladorContexto';
 
 export default function EditarActividad() {
   const [titulo, setTitulo] = useState('Título de la Actividad');
   const [duracion, setDuracion] = useState(''); // Cambiado a string
   const [tipoActividad, setTipoActividad] = useState('Deporte');
-  const isDarkMode = false;
+  const { isDarkMode } = useTheme();
   const styles = isDarkMode ? darkStyles : lightStyles;
 
   const tiposActividad = ['Deporte', 'Estudio', 'Relajación', 'Trabajo'];
@@ -30,7 +31,6 @@ export default function EditarActividad() {
 
   return (
     <ScrollView style={styles.container}>
-
       <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>
         <Text style={styles.backButtonText}>Volver</Text>
       </TouchableOpacity>
@@ -60,15 +60,17 @@ export default function EditarActividad() {
 
       <View style={styles.section}>
         <Text style={styles.label}>Tipo de Actividad:</Text>
-        <Picker
-          selectedValue={tipoActividad}
-          style={styles.picker}
-          onValueChange={(itemValue) => setTipoActividad(itemValue)}
-        >
-          {tiposActividad.map((tipo, index) => (
-            <Picker.Item key={index} label={tipo} value={tipo} />
-          ))}
-        </Picker>
+        <View style={styles.pickerContainer}>
+          <Picker
+            selectedValue={tipoActividad}
+            style={styles.picker}
+            onValueChange={(itemValue) => setTipoActividad(itemValue)}
+          >
+            {tiposActividad.map((tipo, index) => (
+              <Picker.Item key={index} label={tipo} value={tipo} />
+            ))}
+          </Picker>
+        </View>
       </View>
 
       <TouchableOpacity
@@ -123,12 +125,16 @@ const lightStyles = StyleSheet.create({
   section: {
     marginBottom: 20,
   },
-  picker: {
-    height: 50,
-    width: '100%',
+  pickerContainer: {
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 5,
+    backgroundColor: '#fff', // Fondo blanco para el contenedor del Picker
+    overflow: 'hidden', // Asegura que el borde redondeado se mantenga
+  },
+  picker: {
+    height: 60,
+    width: '100%',
   },
   saveButton: {
     backgroundColor: '#007BFF',
@@ -142,11 +148,13 @@ const lightStyles = StyleSheet.create({
     fontWeight: '600',
   },
 });
+
 const darkStyles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
     paddingTop: 60,
+    backgroundColor: '#121212', // Fondo oscuro
   },
   header: {
     flexDirection: 'row',
@@ -159,7 +167,7 @@ const darkStyles = StyleSheet.create({
     marginBottom: 20,
   },
   backButtonText: {
-    color: '#007BFF',
+    color: '#BB86FC', // Color de texto en el modo oscuro
     fontSize: 16,
   },
   image: {
@@ -172,33 +180,41 @@ const darkStyles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
     marginBottom: 10,
+    color: '#E0E0E0', // Color del texto en modo oscuro
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: '#333', // Color del borde en modo oscuro
     borderRadius: 5,
     padding: 10,
     fontSize: 16,
     marginBottom: 20,
+    backgroundColor: '#1e1e1e', // Fondo oscuro del TextInput
+    color: '#E0E0E0', // Color del texto en el TextInput
   },
   section: {
     marginBottom: 20,
   },
-  picker: {
-    height: 50,
-    width: '100%',
+  pickerContainer: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: '#333', // Color del borde en modo oscuro
     borderRadius: 5,
+    backgroundColor: '#1e1e1e', // Fondo oscuro para el contenedor del Picker
+    overflow: 'hidden', // Asegura que el borde redondeado se mantenga
+  },
+  picker: {
+    height: 60,
+    width: '100%',
+    color: '#E0E0E0', // Color del texto en el Picker
   },
   saveButton: {
-    backgroundColor: '#007BFF',
+    backgroundColor: '#BB86FC', // Color del botón en modo oscuro
     padding: 15,
     borderRadius: 5,
     alignItems: 'center',
   },
   saveButtonText: {
-    color: '#fff',
+    color: '#121212', // Color del texto en el botón en modo oscuro
     fontSize: 16,
     fontWeight: '600',
   },

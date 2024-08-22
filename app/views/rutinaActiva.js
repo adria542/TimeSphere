@@ -1,26 +1,26 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useTheme } from '../controllers/controladorContexto';
 
 const RutinaActiva = () => {
-
   const navigation = useNavigation();
+  const { isDarkMode } = useTheme();
+  const styles = isDarkMode ? darkStyles : lightStyles;
 
   // Maneja el toque en el botón "Volver"
   const handleBackPress = () => {
     navigation.navigate('_sitemap');
   };
-  const isDarkMode = false;
-  const styles = isDarkMode ? darkStyles : lightStyles;
 
   return (
     <View style={styles.container}>
-      {/* Fila con el botón "Volver" y el título "???" */}
+      {/* Fila con el botón "Volver" y el título */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>
           <Text style={styles.backButtonText}>Volver</Text>
         </TouchableOpacity>
-        <Text style={styles.title}>???</Text>
+        <Text style={styles.title}>Rutina Activa</Text>
       </View>
       
       {/* Imagen grande */}
@@ -63,6 +63,7 @@ const lightStyles = StyleSheet.create({
     padding: 10,
     alignItems: 'center', // Centra horizontalmente el contenido
     justifyContent: 'center', // Centra verticalmente el contenido
+    backgroundColor: '#fff', // Fondo blanco para el modo claro
   },
   header: {
     flexDirection: 'row',
@@ -77,7 +78,7 @@ const lightStyles = StyleSheet.create({
     padding: 10,
   },
   backButtonText: {
-    color: '#007BFF',
+    color: '#007BFF', // Color del botón "Volver" en el modo claro
     fontSize: 16,
   },
   title: {
@@ -117,6 +118,7 @@ const darkStyles = StyleSheet.create({
     padding: 10,
     alignItems: 'center', // Centra horizontalmente el contenido
     justifyContent: 'center', // Centra verticalmente el contenido
+    backgroundColor: '#121212', // Fondo oscuro para el modo oscuro
   },
   header: {
     flexDirection: 'row',
@@ -131,13 +133,14 @@ const darkStyles = StyleSheet.create({
     padding: 10,
   },
   backButtonText: {
-    color: '#007BFF',
+    color: '#BB86FC', // Color del botón "Volver" en el modo oscuro
     fontSize: 16,
   },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'center', // Asegura que el título esté centrado en su contenedor
+    color: '#fff', // Color del título en el modo oscuro
   },
   image: {
     width: 300,
@@ -149,6 +152,7 @@ const darkStyles = StyleSheet.create({
     fontSize: 40,
     fontWeight: 'bold',
     marginBottom: 20,
+    color: '#fff', // Color del tiempo en el modo oscuro
   },
   iconsContainer: {
     flexDirection: 'row',
@@ -164,4 +168,5 @@ const darkStyles = StyleSheet.create({
     resizeMode: 'contain', // Mantiene la proporción de la imagen
   },
 });
+
 export default RutinaActiva;

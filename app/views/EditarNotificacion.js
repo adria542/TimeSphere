@@ -1,20 +1,13 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  Switch,
-  TouchableOpacity,
-  StyleSheet,
-  ScrollView
-} from 'react-native';
+import { View, Text, TextInput, Switch, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { useTheme } from '../controllers/controladorContexto';
 import { useNavigation } from '@react-navigation/native';
 
 export default function EditarNotificacion() {
   const [textoNotificacion, setTextoNotificacion] = useState('');
   const [sonidoActivado, setSonidoActivado] = useState(false);
   const [vibracionActivada, setVibracionActivada] = useState(false);
-  const isDarkMode = false;
+  const { isDarkMode } = useTheme();
   const styles = isDarkMode ? darkStyles : lightStyles;
 
   const handleGuardar = () => {
@@ -49,6 +42,7 @@ export default function EditarNotificacion() {
           value={textoNotificacion}
           onChangeText={setTextoNotificacion}
           placeholder="Ingrese el texto de la notificación"
+          placeholderTextColor={isDarkMode ? '#888' : '#999'}
         />
       </View>
 
@@ -57,6 +51,8 @@ export default function EditarNotificacion() {
         <Switch
           value={sonidoActivado}
           onValueChange={setSonidoActivado}
+          trackColor={{ false: '#767577', true: '#81b0ff' }}
+          thumbColor={sonidoActivado ? '#007BFF' : '#f4f3f4'}
         />
       </View>
 
@@ -65,6 +61,8 @@ export default function EditarNotificacion() {
         <Switch
           value={vibracionActivada}
           onValueChange={setVibracionActivada}
+          trackColor={{ false: '#767577', true: '#81b0ff' }}
+          thumbColor={vibracionActivada ? '#007BFF' : '#f4f3f4'}
         />
       </View>
 
@@ -79,41 +77,37 @@ export default function EditarNotificacion() {
 }
 
 const lightStyles = StyleSheet.create({
-    container: {
-      flex: 1,
-      padding: 20,
-      paddingTop: 70,
-    },
-    header: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center', // Centra horizontalmente
-      marginBottom: 20,
-    },
-    backButton: {
-      left: 0,
-      marginBottom: 20,
-    },
-    backButtonText: {
-      color: '#007BFF',
-      fontSize: 16,
-    },
+  container: {
+    flex: 1,
+    padding: 20,
+    paddingTop: 70,
+  },
+  backButton: {
+    marginBottom: 20,
+  },
+  backButtonText: {
+    color: '#007BFF',
+    fontSize: 16,
+  },
   title: {
     fontSize: 24,
     fontWeight: '600',
     marginBottom: 20,
     textAlign: 'center',
   },
+  section: {
+    marginBottom: 20,
+  },
   sectionOptions: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginVertical: 20,
+    marginVertical: 10,
   },
   label: {
     fontSize: 18,
     fontWeight: '600',
-    marginBottom: 10,
+    color: '#000',
   },
   input: {
     borderWidth: 1,
@@ -121,6 +115,7 @@ const lightStyles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     fontSize: 16,
+    color: '#000',
   },
   doneButton: {
     backgroundColor: '#007BFF',
@@ -135,60 +130,61 @@ const lightStyles = StyleSheet.create({
     fontWeight: '600',
   },
 });
+
 const darkStyles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
     paddingTop: 70,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center', // Centra horizontalmente
-    marginBottom: 20,
+    backgroundColor: '#1e1e1e', // Fondo oscuro para el modo oscuro
   },
   backButton: {
-    left: 0,
     marginBottom: 20,
   },
   backButtonText: {
     color: '#007BFF',
     fontSize: 16,
   },
-title: {
-  fontSize: 24,
-  fontWeight: '600',
-  marginBottom: 20,
-  textAlign: 'center',
-},
-sectionOptions: {
-  flexDirection: 'row',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  marginVertical: 20,
-},
-label: {
-  fontSize: 18,
-  fontWeight: '600',
-  marginBottom: 10,
-},
-input: {
-  borderWidth: 1,
-  borderColor: '#ccc',
-  borderRadius: 5,
-  padding: 10,
-  fontSize: 16,
-},
-doneButton: {
-  backgroundColor: '#007BFF',
-  padding: 15,
-  borderRadius: 5,
-  alignItems: 'center',
-  marginTop: 20,
-},
-doneButtonText: {
-  color: '#fff',
-  fontSize: 16,
-  fontWeight: '600',
-},
+  title: {
+    fontSize: 24,
+    fontWeight: '600',
+    marginBottom: 20,
+    textAlign: 'center',
+    color: '#e0e0e0', // Color del texto en modo oscuro
+  },
+  section: {
+    marginBottom: 20,
+  },
+  sectionOptions: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  label: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#e0e0e0', // Color del texto en modo oscuro
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#444', // Color del borde en modo oscuro
+    borderRadius: 5,
+    padding: 10,
+    fontSize: 16,
+    color: '#e0e0e0', // Color del texto en el input
+    backgroundColor: '#333', // Fondo del input en modo oscuro
+  },
+  doneButton: {
+    backgroundColor: '#007BFF',
+    padding: 15,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  doneButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
 });

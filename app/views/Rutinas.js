@@ -1,15 +1,20 @@
-import { View, Text, FlatList, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import React from 'react';
+import { View, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import Rutina from '../components/rutinas';
 import { useNavigation } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
+import { useTheme } from '../controllers/controladorContexto';
+import { useDay } from '../controllers/controladorContexto';
 
-const daysOfWeek = ['1 LUN', '2 MAR', '3 MIE', '4 JUE', '5 VIE', '6 SAB', '7 DOM'];
+// Importa tu propio componente DaySelector
+import DaySelector from '../components/barraSemanal'; // Ajusta la ruta según sea necesario
 
 export default function Rutinas() {
+  const { selectedDay } = useDay();
   const navigation = useNavigation();
-
-  const handlePress = () => {
-    navigation.navigate('views/EditarRutina');
+  
+  const handlePress = (titulo) => {
+    navigation.navigate('views/EditarRutina', { titulo });
   };
 
   const handlePressOptions = () => {
@@ -19,42 +24,31 @@ export default function Rutinas() {
   const handlePressPlus = () => {
     navigation.navigate('views/CrearRutina');
   };
-  const isDarkMode = false;
+
+  const { isDarkMode } = useTheme();
   const styles = isDarkMode ? darkStyles : lightStyles;
 
   return (
     <View style={styles.container}>
-      {/* Primer componente: Botón + Grid */}
+      {/* Primer componente: Botón de Configuración y Selector de Días */}
       <View style={styles.topComponent}>
         <TouchableOpacity style={styles.backButton} onPress={handlePressOptions}>
-          <MaterialIcons name="settings" size={24} color="blue" />
+          <MaterialIcons name="settings" size={24} color={isDarkMode ? "#BB86FC" : "blue"} />
         </TouchableOpacity>
-        <FlatList
-          data={daysOfWeek}
-          horizontal
-          keyExtractor={(item) => item}
-          renderItem={({ item, index }) => (
-            <Text style={[styles.dayItem, index !== daysOfWeek.length - 1 && styles.dayItemBorder]}>
-              {item}
-            </Text>
-          )}
-          style={styles.grid}
-          contentContainerStyle={styles.gridContentContainer} // Agrega los estilos de disposición aquí
-        />
+        <DaySelector />
       </View>
 
-      {/* Segundo componente: Scroll List */}
+      {/* Segundo componente: Lista de Rutinas */}
       <ScrollView style={{ flex: 1 }} contentContainerStyle={styles.scrollContentContainer}>
         <Rutina titulo="Hacer ejercicio" hora="07:00 AM" imagen="https://example.com/imagen1.jpg" onPress={() => handlePress("Hacer ejercicio")} />
         <Rutina titulo="Desayuno" hora="08:00 AM" imagen="https://example.com/imagen2.jpg" onPress={() => handlePress("Desayuno")} />
         <Rutina titulo="Reunión de trabajo" hora="09:00 AM" imagen="https://example.com/imagen3.jpg" onPress={() => handlePress("Reunión de trabajo")} />
       </ScrollView>
-      
-      {/* botón + */}
+
+      {/* Botón de Agregar Rutina */}
       <TouchableOpacity style={styles.plusButton} onPress={handlePressPlus}>
         <MaterialIcons name="add" size={44} color="white" />
       </TouchableOpacity>
-
     </View>
   );
 }
@@ -62,34 +56,19 @@ export default function Rutinas() {
 const lightStyles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 60,
+    paddingTop: 60,
   },
   topComponent: {
     flexDirection: 'row',
     padding: 10,
-  },
-  grid: {
-    flexGrow: 0, // Ajusta el tamaño del grid al contenido
-    borderWidth: 2,
-  },
-  gridContentContainer: {
-    justifyContent: 'center', // Mueve aquí el estilo de disposición
-  },
-  dayItem: {
-    fontSize: 13,
-    paddingHorizontal: 7.5,
-    paddingVertical: 5,
-    textAlign: 'center',
-  },
-  dayItemBorder: {
-    borderRightWidth: 1,
+    alignItems: 'center',
   },
   scrollContentContainer: {
     flexGrow: 1, // Asegura que el ScrollView se expanda correctamente
+    marginTop: 10,
   },
   plusButton: {
     margin: 20,
-    size: 0,
     alignSelf: 'flex-end',
     backgroundColor: 'blue',
     borderRadius: 30,
@@ -99,36 +78,24 @@ const lightStyles = StyleSheet.create({
 const darkStyles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 60,
+    backgroundColor: '#121212', // Fondo oscuro
   },
   topComponent: {
     flexDirection: 'row',
     padding: 10,
-  },
-  grid: {
-    flexGrow: 0, // Ajusta el tamaño del grid al contenido
-    borderWidth: 2,
-  },
-  gridContentContainer: {
-    justifyContent: 'center', // Mueve aquí el estilo de disposición
-  },
-  dayItem: {
-    fontSize: 13,
-    paddingHorizontal: 7.5,
-    paddingVertical: 5,
-    textAlign: 'center',
-  },
-  dayItemBorder: {
-    borderRightWidth: 1,
+    alignItems: 'center',
+    paddingTop: 60,
+    backgroundColor: '#1E1E1E', // Fondo un poco más claro para el componente superior
   },
   scrollContentContainer: {
     flexGrow: 1, // Asegura que el ScrollView se expanda correctamente
+    marginTop: 10,
+    backgroundColor: '#121212', // Fondo oscuro para la lista de scroll
   },
   plusButton: {
     margin: 20,
-    size: 0,
     alignSelf: 'flex-end',
-    backgroundColor: 'blue',
+    backgroundColor: '#BB86FC', // Color morado para el botón de agregar (+)
     borderRadius: 30,
   },
 });
