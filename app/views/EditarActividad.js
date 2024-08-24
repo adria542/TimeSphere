@@ -31,7 +31,7 @@ export default function EditarActividad() {
           if (rutina) {
             const actividad = rutina.actividades.find(act => act.id === actividadId);
             if (actividad) {
-              setTitulo(actividad.titulo);
+              setTitulo(actividad.nombre);
               setDuracion(actividad.duracion.toString());
               setTipoActividad(actividad.tipo);
             }
@@ -81,6 +81,7 @@ export default function EditarActividad() {
 
         // Obtener la rutina actual y añadir la nueva actividad
         const rutina = await Rutina.getRutinaPorId(rutinaId);
+        console.log(rutina.notificacion.id)
         if (rutina) {
           rutina.actividades.push(nuevaActividad);
           await rutina.save(selectedDay);

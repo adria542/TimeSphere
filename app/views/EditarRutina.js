@@ -2,9 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 import Actividad from '../components/actividad'; // Asegúrate de usar la ruta correcta
 import { useNavigation, useRoute, useIsFocused } from '@react-navigation/native';
-import { useTheme } from '../controllers/controladorContexto';
+import { useTheme, useDay, useRutinaId } from '../controllers/controladorContexto';
 import { Rutina } from '../models/rutina'; // Importa el modelo Rutina
-import { useDay, useRutinaId } from '../controllers/controladorContexto';
 
 const EditarRutina = () => {
   const { rutinaId, changeStateTrue, changeStateFalse, changeActividad } = useRutinaId();
@@ -25,9 +24,10 @@ const EditarRutina = () => {
       try {
         const rutinaCargada = await Rutina.getRutinaPorId(rutinaId);
         setRutina(rutinaCargada);
-        // Suponiendo que cada rutina tiene una lista de actividades, cámbiala según sea necesario
-        setActividades(rutinaCargada.actividades || []);
-        console.log(actividades)
+        // Verifica que rutinaCargada y rutinaCargada.actividades estén definidos
+        setActividades(rutinaCargada?.actividades || []);
+        console.log(rutinaCargada?.actividades)
+        console
       } catch (error) {
         console.error("Error cargando rutina:", error);
       }
@@ -41,7 +41,7 @@ const EditarRutina = () => {
     // Implementa la lógica para manejar el toque en una actividad
     console.log('Actividad seleccionada:', actividad);
     changeStateTrue();
-    changeActividad(actividad.id)
+    changeActividad(actividad.id);
     navigation.navigate('views/EditarActividad');
   };
 
@@ -50,6 +50,8 @@ const EditarRutina = () => {
   };
 
   const getHoraFinal = () => {
+    if (!rutina) return 'Desconocida'; // Devuelve un valor por defecto si rutina es null
+
     const convertToMinutes = (timeStr) => {
       const [hours, minutes] = timeStr.split(':').map(Number);
       return hours * 60 + minutes;
@@ -68,7 +70,7 @@ const EditarRutina = () => {
     const horaFinal = convertToTimeStr(horaFinalEnMinutos);
     return horaFinal;
   };
-  
+
   const handleRutinaPress = async () => {
     await changeStateFalse();
     navigation.navigate('views/CrearRutina');
@@ -77,7 +79,7 @@ const EditarRutina = () => {
   const handleNuevaActividad = async () => {
     await changeStateFalse();
     navigation.navigate('views/EditarActividad');
-  }
+  };
 
   return (
     <View style={styles.container}>
@@ -97,16 +99,20 @@ const EditarRutina = () => {
             </Text>
           </TouchableOpacity>
           <ScrollView style={styles.activityList}>
-            {actividades.map(actividad => (
-              <TouchableOpacity key={actividad.id} onPress={() => handleActivityPress(actividad)}>
-                <Actividad
-                  imagen={actividad.imagen}
-                  titulo={actividad.nombre}
-                  hora={`Duración: ${actividad.duracion} mins`} // Asegúrate de que `hora` sea una cadena
-                  tipo = {actividad.tipo}
-                />
-              </TouchableOpacity>
-            ))}
+            {actividades.length > 0 ? (
+              actividades.map(actividad => (
+                <TouchableOpacity key={actividad.id} onPress={() => handleActivityPress(actividad)}>
+                  <Actividad
+                    imagen={actividad.imagen}
+                    titulo={actividad.nombre}
+                    hora={`Duración: ${actividad.duracion} mins`} // Asegúrate de que `hora` sea una cadena
+                    tipo={actividad.tipo}
+                  />
+                </TouchableOpacity>
+              ))
+            ) : (
+              <Text style={styles.loading}>No hay actividades disponibles</Text>
+            )}
           </ScrollView>
           <View style={styles.footer}>
             <TouchableOpacity 

@@ -36,8 +36,8 @@ export default function Rutinas() {
     }
   }, [selectedDay, isFocused]);
 
-  const handlePress = (rutinaId) => {
-    changeRutina(rutinaId)
+  const handlePress = async (rutinaId) => {
+    await changeRutina(rutinaId)
     navigation.navigate('views/EditarRutina');
   };
 
