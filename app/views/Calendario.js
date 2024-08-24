@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import { Calendar } from 'react-native-calendars';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useTheme } from '../controllers/controladorContexto';
 import { useDay } from '../controllers/controladorContexto';
@@ -12,6 +12,7 @@ export default function Calendario() {
   const [selectedButton, setSelectedButton] = useState('left');
   const [selectedDate, setSelectedDate] = useState('');
   const { isDarkMode } = useTheme();
+  const isFocused = useIsFocused(); // Hook para saber si la pantalla está enfocada
   const [calendarKey, setCalendarKey] = useState(0); // Key para forzar el re-render
 
   // Manejar el evento de presionar un día en el calendario
@@ -37,7 +38,6 @@ export default function Calendario() {
   useEffect(() => {
     setCalendarKey(prevKey => prevKey + 1);
   }, [isDarkMode]);
-
   const styles = isDarkMode ? darkStyles : lightStyles;
 
   return (
