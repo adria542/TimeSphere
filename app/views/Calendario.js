@@ -18,10 +18,12 @@ export default function Calendario() {
   const onDayPress = (day) => {
     if (selectedButton === 'right') { // Si el botón seleccionado es "Diario"
       changeDayDiario(new Date(day.dateString))
+      console.log(day.dateString)
       setSelectedDate(day.dateString);
       navigation.navigate('views/Diario');
     } else if (selectedButton === 'left') { // Si el botón seleccionado es "Calendario"
       changeDay(new Date(day.dateString));
+      console.log(day.dateString)
       navigation.navigate('views/Rutinas');
       navigation.navigate('Rutinas');
     }

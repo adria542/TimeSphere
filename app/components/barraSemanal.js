@@ -26,7 +26,7 @@ const DaySelector = () => {
     <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollContainer}>
       {days.map((day, index) => (
         <TouchableOpacity key={index} onPress={() => handleDayChange(day)} style={styles.dayButton}>
-          <Text style={[styles.dayText, day.toDateString() === selectedDay.toDateString() && styles.selectedDayText]}>
+          <Text style={[styles.dayText, (day) === (selectedDay) && styles.selectedDayText]}>
             {day.toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric' })}
           </Text>
         </TouchableOpacity>

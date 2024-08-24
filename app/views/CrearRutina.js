@@ -4,12 +4,18 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useTheme } from '../controllers/controladorContexto';
+import { useDay } from '../controllers/controladorContexto';
+import { Rutina } from '../models/rutina'; // Importa el modelo Rutina
+import { Notificacion } from '../models/modeloNotificacion';
 
 export default function CrearRutina() {
+  const { selectedDay } = useDay();
   const navigation = useNavigation();
   const [titulo, setTitulo] = useState('');
   const [horaInicio, setHoraInicio] = useState(new Date());
   const [mostrarHoraPicker, setMostrarHoraPicker] = useState(false);
+  const [actividades, setActividades] = useState([])
+  const [notificacion, setNotificacion] = useState(new Notificacion('N' + Date.now().toString(), false, false, false, 'notificación'))
   const [notificacionesActivadas, setNotificacionesActivadas] = useState(false);
   const { isDarkMode } = useTheme();
   const styles = isDarkMode ? darkStyles : lightStyles;
@@ -21,13 +27,29 @@ export default function CrearRutina() {
   };
 
   const toggleNotificaciones = () => {
+    notificacion.cambiarEstadoActiva();
     setNotificacionesActivadas((previousState) => !previousState);
   };
 
-  const handleHecho = () => {
-    navigation.navigate('_sitemap');
+  const handleHecho = async () => {
+      try {
+      const nuevaRutina = new Rutina(
+        // Genera un ID único para la rutina, por ejemplo usando un timestamp
+        Date.now().toString(), 
+        actividades, // Puedes inicializar con actividades si tienes alguna
+        notificacion, // Inicializa notificaciones si es necesario
+        horaInicio.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        'https://firebasestorage.googleapis.com/v0/b/timesphere-b6efd.appspot.com/o/png-clipart-symbolize-x.png?alt=media&token=9cff17e8-cfa9-4e0b-b207-827b8251304e', // Inicializa con una imagen si es necesario
+        titulo
+      );
+      await nuevaRutina.save(selectedDay); // Guarda la rutina en la base de datos
+      // Navega a la vista principal o a donde quieras después de guardar
+      navigation.navigate('_sitemap', { refresh: true });
+    } catch (error) {
+      console.error("Error guardando la rutina:", error);
+    }
   };
-  
+
   const handleBackPress = () => {
     navigation.navigate('_sitemap');
   };
@@ -71,13 +93,13 @@ export default function CrearRutina() {
 
       {mostrarHoraPicker && (
         <View style={styles.pickerContainer}>
-        <DateTimePicker
-          value={horaInicio}
-          mode="time"
-          display="default"
-          onChange={onChangeHora}
-        />
-      </View>
+          <DateTimePicker
+            value={horaInicio}
+            mode="time"
+            display="default"
+            onChange={onChangeHora}
+          />
+        </View>
       )}
 
       <View style={styles.section}>

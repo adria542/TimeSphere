@@ -17,7 +17,8 @@ import EditarActividad from './views/EditarActividad';
 import EditarNotificacion from './views/EditarNotificacion';
 import EditarListaDeLaCompra from './views/EditarListaDeLaCompra';
 import { ThemeProvider, useTheme } from './controllers/controladorContexto'; // Asegúrate de que la ruta es correcta
-import { DayProvider, useDay } from './controllers/controladorContexto';
+import { DayProvider } from './controllers/controladorContexto';
+import { RutinaProvider } from './controllers/controladorContexto';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -56,22 +57,24 @@ export default function RootLayout() {
   return (
     <DayProvider>
       <ThemeProvider>
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="_sitemap" component={TabNavigator} />
-          <Stack.Screen name="views/rutinaActiva" component={RutinaActiva} />
-          <Stack.Screen name="views/Rutinas" component={Rutinas} />
-          <Stack.Screen name="views/Calendario" component={Calendario} />
-          <Stack.Screen name="views/Diario" component={Diario} />
-          <Stack.Screen name="views/Filtros" component={Filtros} />
-          <Stack.Screen name="views/Supermercados" component={Supermercados} />
-          <Stack.Screen name="views/Opciones" component={Opciones} />
-          <Stack.Screen name="views/ListasDeLaCompra" component={ListasDeLaCompra} />
-          <Stack.Screen name="views/CrearRutina" component={CrearRutina} />
-          <Stack.Screen name="views/EditarRutina" component={EditarRutina} />
-          <Stack.Screen name="views/EditarActividad" component={EditarActividad} />
-          <Stack.Screen name="views/EditarNotificacion" component={EditarNotificacion} />
-          <Stack.Screen name="views/EditarListaDeLaCompra" component={EditarListaDeLaCompra} />
-        </Stack.Navigator>
+        <RutinaProvider>
+          <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="_sitemap" component={TabNavigator} />
+            <Stack.Screen name="views/rutinaActiva" component={RutinaActiva} />
+            <Stack.Screen name="views/Rutinas" component={Rutinas} />
+            <Stack.Screen name="views/Calendario" component={Calendario} />
+            <Stack.Screen name="views/Diario" component={Diario} />
+            <Stack.Screen name="views/Filtros" component={Filtros} />
+            <Stack.Screen name="views/Supermercados" component={Supermercados} />
+            <Stack.Screen name="views/Opciones" component={Opciones} />
+            <Stack.Screen name="views/ListasDeLaCompra" component={ListasDeLaCompra} />
+            <Stack.Screen name="views/CrearRutina" component={CrearRutina} />
+            <Stack.Screen name="views/EditarRutina" component={EditarRutina} />
+            <Stack.Screen name="views/EditarActividad" component={EditarActividad} />
+            <Stack.Screen name="views/EditarNotificacion" component={EditarNotificacion} />
+            <Stack.Screen name="views/EditarListaDeLaCompra" component={EditarListaDeLaCompra} />
+          </Stack.Navigator>
+        </RutinaProvider>
       </ThemeProvider>
     </DayProvider>
   );

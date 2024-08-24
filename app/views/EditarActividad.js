@@ -1,29 +1,98 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native';
-import { Picker } from '@react-native-picker/picker'; // Asegúrate de instalar este paquete
-import { useNavigation } from '@react-navigation/native';
-import { useTheme } from '../controllers/controladorContexto';
+import { Picker } from '@react-native-picker/picker';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
+import { useTheme, useRutinaId } from '../controllers/controladorContexto';
+import { Rutina } from '../models/rutina';
+import { Actividad } from '../models/modeloActividad';
+import { useDay } from '../controllers/controladorContexto';
 
 export default function EditarActividad() {
-  const [titulo, setTitulo] = useState('Título de la Actividad');
-  const [duracion, setDuracion] = useState(''); // Cambiado a string
+  const { selectedDay } = useDay();
+  const { rutinaId, editandoActividad, actividadId } = useRutinaId();
+  const [titulo, setTitulo] = useState('');
+  const [duracion, setDuracion] = useState('');
   const [tipoActividad, setTipoActividad] = useState('Deporte');
   const { isDarkMode } = useTheme();
   const styles = isDarkMode ? darkStyles : lightStyles;
+  const navigation = useNavigation();
+  const isFocused = useIsFocused(); // Hook para saber si la pantalla está enfocada
 
   const tiposActividad = ['Deporte', 'Estudio', 'Relajación', 'Trabajo'];
 
-  const handleSave = () => {
-    // Aquí puedes manejar la lógica para guardar la actividad
-    console.log('Actividad guardada:', {
-      titulo,
-      duracion,
-      tipoActividad,
-    });
-    navigation.navigate('views/EditarRutina');
-  };
+  useEffect(() => {
+    console.log(editandoActividad)
+    if (editandoActividad) {
+      // Cargar los detalles de la actividad cuando editandoActividad es true
+      const fetchActividad = async () => {
+        try {
+          // Obtener la rutina actual y buscar la actividad por ID
+          const rutina = await Rutina.getRutinaPorId(rutinaId);
+          if (rutina) {
+            const actividad = rutina.actividades.find(act => act.id === actividadId);
+            if (actividad) {
+              setTitulo(actividad.titulo);
+              setDuracion(actividad.duracion.toString());
+              setTipoActividad(actividad.tipo);
+            }
+          }
+          else {
+            setTitulo('');
+            setDuracion('');
+            setTipoActividad('Deporte');
+          }
+        } catch (error) {
+          console.error('Error al cargar la actividad:', error);
+        }
+      };
+      if (isFocused) {
+        fetchActividad();
+      }
+    }
+  }, [editandoActividad, actividadId, rutinaId, isFocused]);
 
-  const navigation = useNavigation();
+  const handleSave = async () => {
+    try {
+      if (editandoActividad) {
+        // Actualizar la actividad existente
+        const rutina = await Rutina.getRutinaPorId(rutinaId);
+        if (rutina) {
+          const actividadIndex = rutina.actividades.findIndex(act => act.id === actividadId);
+          if (actividadIndex > -1) {
+            rutina.actividades[actividadIndex] = new Actividad(
+              actividadId, // Usar el mismo ID para actualizar
+              titulo,
+              tipoActividad,
+              'https://firebasestorage.googleapis.com/v0/b/timesphere-b6efd.appspot.com/o/png-clipart-symbolize-x.png?alt=media&token=9cff17e8-cfa9-4e0b-b207-827b8251304e',
+              parseInt(duracion, 10)
+            );
+            await rutina.save(selectedDay);
+          }
+        }
+      } else {
+        // Crear una nueva actividad
+        const nuevaActividad = new Actividad(
+          'A' + Date.now().toString(),
+          titulo,
+          tipoActividad,
+          'https://firebasestorage.googleapis.com/v0/b/timesphere-b6efd.appspot.com/o/png-clipart-symbolize-x.png?alt=media&token=9cff17e8-cfa9-4e0b-b207-827b8251304e',
+          parseInt(duracion, 10)
+        );
+
+        // Obtener la rutina actual y añadir la nueva actividad
+        const rutina = await Rutina.getRutinaPorId(rutinaId);
+        if (rutina) {
+          rutina.actividades.push(nuevaActividad);
+          await rutina.save(selectedDay);
+        }
+      }
+
+      // Navegar de vuelta a la vista de edición de rutina
+      navigation.navigate('views/EditarRutina');
+    } catch (error) {
+      console.error('Error al guardar la actividad:', error);
+    }
+  };
 
   const handleBackPress = () => {
     navigation.navigate('views/EditarRutina');
@@ -51,7 +120,7 @@ export default function EditarActividad() {
         <Text style={styles.label}>Duración (minutos):</Text>
         <TextInput
           style={styles.input}
-          keyboardType="numeric" // Permite solo números
+          keyboardType="numeric"
           value={duracion}
           onChangeText={setDuracion}
           placeholder="Ingrese duración en minutos"
@@ -89,14 +158,7 @@ const lightStyles = StyleSheet.create({
     padding: 20,
     paddingTop: 60,
   },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center', // Centra horizontalmente
-    marginBottom: 20,
-  },
   backButton: {
-    left: 0,
     marginBottom: 20,
   },
   backButtonText: {
@@ -129,8 +191,8 @@ const lightStyles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 5,
-    backgroundColor: '#fff', // Fondo blanco para el contenedor del Picker
-    overflow: 'hidden', // Asegura que el borde redondeado se mantenga
+    backgroundColor: '#fff',
+    overflow: 'hidden',
   },
   picker: {
     height: 60,
@@ -154,20 +216,13 @@ const darkStyles = StyleSheet.create({
     flex: 1,
     padding: 20,
     paddingTop: 60,
-    backgroundColor: '#121212', // Fondo oscuro
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center', // Centra horizontalmente
-    marginBottom: 20,
+    backgroundColor: '#121212',
   },
   backButton: {
-    left: 0,
     marginBottom: 20,
   },
   backButtonText: {
-    color: '#BB86FC', // Color de texto en el modo oscuro
+    color: '#BB86FC',
     fontSize: 16,
   },
   image: {
@@ -180,41 +235,41 @@ const darkStyles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
     marginBottom: 10,
-    color: '#E0E0E0', // Color del texto en modo oscuro
+    color: '#E0E0E0',
   },
   input: {
     borderWidth: 1,
-    borderColor: '#333', // Color del borde en modo oscuro
+    borderColor: '#333',
     borderRadius: 5,
     padding: 10,
     fontSize: 16,
     marginBottom: 20,
-    backgroundColor: '#1e1e1e', // Fondo oscuro del TextInput
-    color: '#E0E0E0', // Color del texto en el TextInput
+    backgroundColor: '#1e1e1e',
+    color: '#E0E0E0',
   },
   section: {
     marginBottom: 20,
   },
   pickerContainer: {
     borderWidth: 1,
-    borderColor: '#333', // Color del borde en modo oscuro
+    borderColor: '#333',
     borderRadius: 5,
-    backgroundColor: '#1e1e1e', // Fondo oscuro para el contenedor del Picker
-    overflow: 'hidden', // Asegura que el borde redondeado se mantenga
+    backgroundColor: '#1e1e1e',
+    overflow: 'hidden',
   },
   picker: {
     height: 60,
     width: '100%',
-    color: '#E0E0E0', // Color del texto en el Picker
+    color: '#E0E0E0',
   },
   saveButton: {
-    backgroundColor: '#BB86FC', // Color del botón en modo oscuro
+    backgroundColor: '#BB86FC',
     padding: 15,
     borderRadius: 5,
     alignItems: 'center',
   },
   saveButtonText: {
-    color: '#121212', // Color del texto en el botón en modo oscuro
+    color: '#121212',
     fontSize: 16,
     fontWeight: '600',
   },

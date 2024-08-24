@@ -1,35 +1,83 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 import Actividad from '../components/actividad'; // Asegúrate de usar la ruta correcta
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute, useIsFocused } from '@react-navigation/native';
 import { useTheme } from '../controllers/controladorContexto';
+import { Rutina } from '../models/rutina'; // Importa el modelo Rutina
+import { useDay, useRutinaId } from '../controllers/controladorContexto';
 
 const EditarRutina = () => {
-  // Datos de ejemplo para las actividades
-  const actividades = [
-    { id: '1', imagen: { uri: 'https://example.com/imagen1.jpg' }, titulo: 'Actividad 1', hora: '10:00 AM' },
-    { id: '2', imagen: { uri: 'https://example.com/imagen2.jpg' }, titulo: 'Actividad 2', hora: '11:00 AM' },
-    // Agrega más actividades según sea necesario
-  ];
-
+  const { rutinaId, changeStateTrue, changeStateFalse, changeActividad } = useRutinaId();
+  const { selectedDay } = useDay();
+  const route = useRoute(); // Hook para obtener los parámetros de navegación
   const navigation = useNavigation();
+  const isFocused = useIsFocused(); // Hook para saber si la pantalla está enfocada
+
+  const [rutina, setRutina] = useState(null);
+  const [actividades, setActividades] = useState([]);
+
+  const { isDarkMode } = useTheme();
+  const styles = isDarkMode ? darkStyles : lightStyles;
+
+  // Cargar los datos de la rutina al montar el componente
+  useEffect(() => {
+    const cargarRutina = async () => {
+      try {
+        const rutinaCargada = await Rutina.getRutinaPorId(rutinaId);
+        setRutina(rutinaCargada);
+        // Suponiendo que cada rutina tiene una lista de actividades, cámbiala según sea necesario
+        setActividades(rutinaCargada.actividades || []);
+        console.log(actividades)
+      } catch (error) {
+        console.error("Error cargando rutina:", error);
+      }
+    };
+    if (isFocused) {
+      cargarRutina();
+    }
+  }, [rutinaId, isFocused]);
 
   const handleActivityPress = (actividad) => {
     // Implementa la lógica para manejar el toque en una actividad
     console.log('Actividad seleccionada:', actividad);
-    navigation.navigate('views/EditarActividad')
+    changeStateTrue();
+    changeActividad(actividad.id)
+    navigation.navigate('views/EditarActividad');
   };
-  
+
   const handleBackPress = () => {
     navigation.navigate('_sitemap');
   };
 
-  const handleRutinaPress = () => {
+  const getHoraFinal = () => {
+    const convertToMinutes = (timeStr) => {
+      const [hours, minutes] = timeStr.split(':').map(Number);
+      return hours * 60 + minutes;
+    };
+    const convertToTimeStr = (totalMinutes) => {
+      const hours = Math.floor(totalMinutes / 60);
+      const minutes = totalMinutes % 60;
+      return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+    };
+    let horaInicialEnMinutos = convertToMinutes(rutina.hora);
+    let duracionTotal = 0;
+    rutina.actividades.forEach(actividad => {
+      duracionTotal += actividad.duracion; // Asegúrate de que 'duracion' esté en minutos
+    });
+    const horaFinalEnMinutos = horaInicialEnMinutos + duracionTotal;
+    const horaFinal = convertToTimeStr(horaFinalEnMinutos);
+    return horaFinal;
+  };
+  
+  const handleRutinaPress = async () => {
+    await changeStateFalse();
     navigation.navigate('views/CrearRutina');
   };
 
-  const { isDarkMode } = useTheme();
-  const styles = isDarkMode ? darkStyles : lightStyles;
+  const handleNuevaActividad = async () => {
+    await changeStateFalse();
+    navigation.navigate('views/EditarActividad');
+  }
 
   return (
     <View style={styles.container}>
@@ -38,38 +86,46 @@ const EditarRutina = () => {
           <Text style={styles.backButtonText}>Volver</Text>
         </TouchableOpacity>
       </View>
-      <TouchableOpacity onPress={handleRutinaPress}>
-        <Text style={styles.title}>Título de la Rutina</Text>
-        <Text style={styles.subtitle}>
-          Hora de Inicio: 08:00 AM {'\n'}
-          Hora Final: 09:00 AM
-        </Text>
-      </TouchableOpacity>
-      <ScrollView style={styles.activityList}>
-        {actividades.map(actividad => (
-          <TouchableOpacity key={actividad.id} onPress={() => handleActivityPress(actividad)}>
-            <Actividad
-              imagen={actividad.imagen}
-              titulo={actividad.titulo}
-              hora={actividad.hora}
-            />
+
+      {rutina ? (
+        <>
+          <TouchableOpacity onPress={handleRutinaPress}>
+            <Text style={styles.title}>{rutina.titulo}</Text>
+            <Text style={styles.subtitle}>
+              Hora de Inicio: {rutina.hora} {'\n'}
+              Hora Final: {getHoraFinal()}
+            </Text>
           </TouchableOpacity>
-        ))}
-      </ScrollView>
-      <View style={styles.footer}>
-        <TouchableOpacity 
-          style={styles.addButton}
-          onPress={() => navigation.navigate('views/EditarActividad')} // Ajusta el nombre de la pantalla según sea necesario
-        >
-          <Text style={styles.buttonText}>Nueva actividad</Text>
-        </TouchableOpacity>
-        <TouchableOpacity 
-          style={styles.playButton}
-          onPress={() => navigation.navigate('views/rutinaActiva')} // Ajusta el nombre de la pantalla según sea necesario
-        >
-          <Text style={styles.buttonText}>Iniciar rutina</Text>
-        </TouchableOpacity>
-      </View>
+          <ScrollView style={styles.activityList}>
+            {actividades.map(actividad => (
+              <TouchableOpacity key={actividad.id} onPress={() => handleActivityPress(actividad)}>
+                <Actividad
+                  imagen={actividad.imagen}
+                  titulo={actividad.nombre}
+                  hora={`Duración: ${actividad.duracion} mins`} // Asegúrate de que `hora` sea una cadena
+                  tipo = {actividad.tipo}
+                />
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+          <View style={styles.footer}>
+            <TouchableOpacity 
+              style={styles.addButton}
+              onPress={handleNuevaActividad} // Ajusta el nombre de la pantalla según sea necesario
+            >
+              <Text style={styles.buttonText}>Nueva actividad</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={styles.playButton}
+              onPress={() => navigation.navigate('views/rutinaActiva')} // Ajusta el nombre de la pantalla según sea necesario
+            >
+              <Text style={styles.buttonText}>Iniciar rutina</Text>
+            </TouchableOpacity>
+          </View>
+        </>
+      ) : (
+        <Text style={styles.loading}>Cargando...</Text>
+      )}
     </View>
   );
 };
@@ -121,21 +177,23 @@ const lightStyles = StyleSheet.create({
     padding: 15,
     borderRadius: 5,
     alignItems: 'center',
-    width: 'auto',
-    height: 'auto',
   },
   playButton: {
     backgroundColor: '#28A745',
     padding: 15,
     borderRadius: 5,
     alignItems: 'center',
-    width: 'auto',
-    height: 'auto',
   },
   buttonText: {
     color: '#fff',
     fontSize: 20,
     fontWeight: 'bold',
+  },
+  loading: {
+    fontSize: 18,
+    color: '#888',
+    textAlign: 'center',
+    marginTop: 20,
   },
 });
 
@@ -186,21 +244,23 @@ const darkStyles = StyleSheet.create({
     padding: 15,
     borderRadius: 5,
     alignItems: 'center',
-    width: 'auto',
-    height: 'auto',
   },
   playButton: {
     backgroundColor: '#28A745',
     padding: 15,
     borderRadius: 5,
     alignItems: 'center',
-    width: 'auto',
-    height: 'auto',
   },
   buttonText: {
     color: '#fff',
     fontSize: 20,
     fontWeight: 'bold',
+  },
+  loading: {
+    fontSize: 18,
+    color: '#888',
+    textAlign: 'center',
+    marginTop: 20,
   },
 });
 

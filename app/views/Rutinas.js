@@ -1,20 +1,44 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
-import Rutina from '../components/rutinas';
-import { useNavigation } from '@react-navigation/native';
+import RutinaComponent from '../components/rutinas';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useTheme } from '../controllers/controladorContexto';
-import { useDay } from '../controllers/controladorContexto';
-
-// Importa tu propio componente DaySelector
+import { useDay, useRutinaId } from '../controllers/controladorContexto';
+import { Rutina } from '../models/rutina'; // Importa el modelo Rutina
 import DaySelector from '../components/barraSemanal'; // Ajusta la ruta según sea necesario
 
 export default function Rutinas() {
+  const { changeRutina } = useRutinaId();
   const { selectedDay } = useDay();
   const navigation = useNavigation();
-  
-  const handlePress = (titulo) => {
-    navigation.navigate('views/EditarRutina', { titulo });
+  const isFocused = useIsFocused(); // Hook para saber si la pantalla está enfocada
+  const { isDarkMode } = useTheme();
+  const styles = isDarkMode ? darkStyles : lightStyles;
+
+  // Estado para almacenar las rutinas cargadas desde Firebase
+  const [rutinas, setRutinas] = useState([]);
+
+  // Cargar rutinas desde Firebase cuando el componente se monta o cuando la pantalla está enfocada
+  useEffect(() => {
+    const cargarRutinas = async () => {
+      try {
+        const rutinasCargadas = await Rutina.getRutinasPorDia(selectedDay);
+        console.log('Rutinas Cargadas:', rutinasCargadas);
+        setRutinas(rutinasCargadas);
+      } catch (error) {
+        console.error("Error cargando rutinas:", error);
+      }
+    };
+
+    if (isFocused) {
+      cargarRutinas();
+    }
+  }, [selectedDay, isFocused]);
+
+  const handlePress = (rutinaId) => {
+    changeRutina(rutinaId)
+    navigation.navigate('views/EditarRutina');
   };
 
   const handlePressOptions = () => {
@@ -24,9 +48,6 @@ export default function Rutinas() {
   const handlePressPlus = () => {
     navigation.navigate('views/CrearRutina');
   };
-
-  const { isDarkMode } = useTheme();
-  const styles = isDarkMode ? darkStyles : lightStyles;
 
   return (
     <View style={styles.container}>
@@ -40,9 +61,15 @@ export default function Rutinas() {
 
       {/* Segundo componente: Lista de Rutinas */}
       <ScrollView style={{ flex: 1 }} contentContainerStyle={styles.scrollContentContainer}>
-        <Rutina titulo="Hacer ejercicio" hora="07:00 AM" imagen="https://example.com/imagen1.jpg" onPress={() => handlePress("Hacer ejercicio")} />
-        <Rutina titulo="Desayuno" hora="08:00 AM" imagen="https://example.com/imagen2.jpg" onPress={() => handlePress("Desayuno")} />
-        <Rutina titulo="Reunión de trabajo" hora="09:00 AM" imagen="https://example.com/imagen3.jpg" onPress={() => handlePress("Reunión de trabajo")} />
+        {rutinas.map((rutina) => (
+          <RutinaComponent 
+            key={rutina.id}
+            titulo={rutina.titulo}
+            hora={rutina.hora}
+            imagen={rutina.imagen}
+            onPress={() => handlePress(rutina.id)} // Pasa el ID de la rutina para su edición
+          />
+        ))}
       </ScrollView>
 
       {/* Botón de Agregar Rutina */}

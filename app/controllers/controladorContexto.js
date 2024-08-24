@@ -37,5 +37,32 @@ export const DayProvider = ({ children }) => {
   );
 };
 
+const RutinaContext = createContext();
+
+export const RutinaProvider = ({ children }) => {
+  const [actividadId, setActividadId]= useState(false);
+  const [editandoActividad, setEditandoActividad]= useState(false);
+  const [rutinaId, setRutinaId] = useState(null); // Por defecto, el día actual
+
+  const changeRutina = (rutinaId) => {
+    setRutinaId(rutinaId);
+  };
+  const changeStateTrue = () => {
+    setEditandoActividad(true);
+  };
+  const changeStateFalse = () => {
+    setEditandoActividad(false);
+  };
+  const changeActividad = (actividadId) => {
+    setActividadId(actividadId);
+  };
+  return (
+    <RutinaContext.Provider value={{ rutinaId, editandoActividad, actividadId, changeActividad, changeStateTrue, changeStateFalse, changeRutina}}>
+      {children}
+    </RutinaContext.Provider>
+  );
+};
+
+export const useRutinaId = () => useContext(RutinaContext);
 export const useDay = () => useContext(DayContext);
 export const useTheme = () => useContext(ThemeContext);

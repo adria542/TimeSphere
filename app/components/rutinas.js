@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { useTheme } from '../controllers/controladorContexto';
 
-const Rutina = ({ titulo, hora, imagen, onPress }) => {
+const RutinaComponent = ({ titulo, hora, imagen, onPress }) => {
   const { isDarkMode } = useTheme();
   const styles = isDarkMode ? darkStyles : lightStyles;
 
@@ -74,4 +74,4 @@ const darkStyles = StyleSheet.create({
   },
 });
 
-export default Rutina;
+export default RutinaComponent;

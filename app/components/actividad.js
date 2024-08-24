@@ -2,16 +2,19 @@ import React from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
 import { useTheme } from '../controllers/controladorContexto';
 
-const Actividad = ({ imagen, titulo, hora }) => {
+const Actividad = ({ imagen, titulo, hora, tipo }) => {
   const { isDarkMode } = useTheme();
   const styles = isDarkMode ? darkStyles : lightStyles;
 
   return (
     <View style={styles.container}>
-      <Image source={imagen} style={styles.image} />
+      <Image source={{ uri: imagen }} style={styles.image} />
       <View style={styles.textContainer}>
         <Text style={styles.title}>{titulo}</Text>
         <Text style={styles.time}>{hora}</Text>
+      </View>
+      <View style={styles.typeContainer}>
+        <Text style={styles.type}>{tipo}</Text>
       </View>
     </View>
   );
@@ -52,6 +55,17 @@ const lightStyles = StyleSheet.create({
     fontSize: 14,
     color: '#888', // Color del tiempo en modo claro
   },
+  typeContainer: {
+    borderRadius: 5,
+    backgroundColor: '#007BFF', // Azul fuerte
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    marginLeft: 10,
+  },
+  type: {
+    fontSize: 14,
+    color: '#fff', // Color del texto dentro de la caja
+  },
 });
 
 const darkStyles = StyleSheet.create({
@@ -88,6 +102,17 @@ const darkStyles = StyleSheet.create({
   time: {
     fontSize: 14,
     color: '#ccc', // Color del tiempo en modo oscuro
+  },
+  typeContainer: {
+    borderRadius: 5,
+    backgroundColor: '#1E90FF', // Azul brillante
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    marginLeft: 10,
+  },
+  type: {
+    fontSize: 14,
+    color: '#fff', // Color del texto dentro de la caja
   },
 });
 
