@@ -38,7 +38,6 @@ export default function Rutinas() {
 
   const handlePress = async (rutinaId) => {
     await changeRutina(rutinaId)
-    changeNotificacion(new Notificacion ('N' + date, false, false, false, 'notificacion'));
     navigation.navigate('views/EditarRutina');
   };
 

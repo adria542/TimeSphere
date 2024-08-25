@@ -1,26 +1,36 @@
-import React, { useState } from 'react';
-import { Text, View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Text, View, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
 import Supermercado from '../components/supermercados';
 import Compra from '../components/compra';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
-import { useTheme } from '../controllers/controladorContexto';
+import { useTheme, useRutinaId } from '../controllers/controladorContexto';
+import { ListaCompra } from '../models/modeloListaCompra'; // Importa la clase ListaCompra del modelo
+import { Supermercado as SupermercadoModel } from '../models/modeloSupermercado'; // Importa la clase Supermercado del modelo
 
 export default function Supermercados() {
+  const { lista, changeLista } = useRutinaId();
   const [selectedButton, setSelectedButton] = useState('left'); // Estado para seguir el botón seleccionado
+  const [listasCompra, setListasCompra] = useState([]); // Estado para almacenar las listas de la compra
+  const [supermercados, setSupermercados] = useState([]); // Estado para almacenar los supermercados
+  const [loading, setLoading] = useState(true); // Estado para manejar el indicador de carga
   const navigation = useNavigation();
+  const { isDarkMode } = useTheme();
+  const styles = isDarkMode ? darkStyles : lightStyles;
 
   const handlePress = () => {
     // Navega a la pantalla Filtros
     navigation.navigate('views/Filtros');
   };
 
-  const handleCompra = () => {
+  const handleCompra = async (lista) => {
     // Navega a la pantalla ListasDeLaCompra
+    await changeLista(lista);
     navigation.navigate('views/ListasDeLaCompra');
   };
+
   const handleAñadir = () => {
-    // Navega a la pantalla ListasDeLaCompra
+    // Navega a la pantalla EditarListaDeLaCompra
     navigation.navigate('views/EditarListaDeLaCompra');
   };
 
@@ -29,26 +39,28 @@ export default function Supermercados() {
     navigation.navigate('views/Opciones');
   };
 
-  const { isDarkMode } = useTheme();
-  const styles = isDarkMode ? darkStyles : lightStyles;
+  useFocusEffect(
+    useCallback(() => {
+      const cargarDatos = async () => {
+        setLoading(true);
+        try {
+          // Cargar listas de compra
+          const listasRecuperadas = await ListaCompra.getTodasLasListasDeCompra();
+          setListasCompra(listasRecuperadas);
 
-  // Datos de supermercados
-  const supermercados = [
-    { nombre: 'Supermercado Uno', direccion: 'Calle Falsa 123', etiquetas: ['Accesible', 'Baños adaptados'] },
-    { nombre: 'Supermercado Dos', direccion: 'Avenida Siempre Viva 742', etiquetas: ['Estacionamiento adaptado', 'Asientos disponibles'] },
-    { nombre: 'Supermercado Tres', direccion: 'Calle Elm 456', etiquetas: ['Accesible', 'Pasillos anchos'] },
-    { nombre: 'Supermercado Cuatro', direccion: 'Calle Luna 789', etiquetas: ['Accesible', 'Personal capacitado'] },
-    { nombre: 'Supermercado Cinco', direccion: 'Avenida Sol 101', etiquetas: ['Estacionamiento adaptado', 'Pasillos anchos'] },
-  ];
+          // Cargar supermercados
+          const supermercadosRecuperados = await SupermercadoModel.getTodosLosSupermercados();
+          setSupermercados(supermercadosRecuperados);
+        } catch (error) {
+          console.error('Error al cargar los datos:', error);
+        } finally {
+          setLoading(false);
+        }
+      };
 
-  // Datos de compras
-  const compras = [
-    'Compra 1',
-    'Compra 2',
-    'Compra 3',
-    'Compra 4',
-    'Compra 5',
-  ];
+      cargarDatos();
+    }, [])
+  );
 
   return (
     <View style={styles.container}>
@@ -58,7 +70,6 @@ export default function Supermercados() {
         </TouchableOpacity>
       </View>
       <View style={styles.topComponent2}>
-        {/* Botón izquierdo */}
         <TouchableOpacity 
           style={[styles.button, styles.leftButton]} 
           onPress={() => setSelectedButton('left')}
@@ -67,8 +78,6 @@ export default function Supermercados() {
             Supermercados
           </Text>
         </TouchableOpacity>
-
-        {/* Botón derecho */}
         <TouchableOpacity 
           style={[styles.button, styles.rightButton]} 
           onPress={() => setSelectedButton('right')}
@@ -89,36 +98,38 @@ export default function Supermercados() {
           </TouchableOpacity>
         </View>
       )}
-      {/* Botón filtros solo visible si selectedButton no es 'right' */}
       
       <View style={styles.contenedorLista}>
-        <ScrollView style={styles.lista}>
-          {selectedButton === 'left' ? (
-            supermercados.map((supermercado, index) => (
-              <Supermercado
-                key={index}
-                nombre={supermercado.nombre}
-                direccion={supermercado.direccion}
-                etiquetas={supermercado.etiquetas}
-              />
-            ))
-          ) : (
-            compras.map((compra, index) => (
-              <Compra
-                key={index}
-                titulo={compra}
-                onPress={handleCompra}
-              />
-            ))
-          )}
-        </ScrollView>
+        {loading ? (
+          <ActivityIndicator size="large" color={isDarkMode ? "#BB86FC" : "blue"} />
+        ) : (
+          <ScrollView style={styles.lista}>
+            {selectedButton === 'left' ? (
+              supermercados.map((supermercado) => (
+                <Supermercado
+                  key={supermercado.id}
+                  nombre={supermercado.nombre}
+                  direccion={supermercado.ubicacion} // Aquí podrías ajustar cómo mostrar la dirección
+                  etiquetas={supermercado.accesibilidad}
+                />
+              ))
+            ) : (
+              listasCompra.map((lista) => (
+                <Compra
+                  key={lista.id}
+                  titulo={lista.nombre}
+                  onPress={() => handleCompra(lista)} // Cambiado a una función de callback
+                />
+              ))
+            )}
+          </ScrollView>
+        )}
       </View>
-      {/* botón + */}
       {selectedButton !== 'left' && (
           <TouchableOpacity style={styles.plusButton} onPress={handleAñadir}>
             <MaterialIcons name="add" size={44} color="white" />
           </TouchableOpacity>
-        )}
+      )}
     </View>
   );
 }
@@ -126,25 +137,25 @@ export default function Supermercados() {
 const lightStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff', // Fondo claro para la pantalla
+    backgroundColor: '#ffffff',
   },
   topComponent: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between', // Para separar los botones
+    justifyContent: 'space-between',
     padding: 10,
     paddingTop: 60,
-    backgroundColor: '#f5f5f5', // Fondo claro para la barra superior
+    backgroundColor: '#f5f5f5',
   },
   topComponent2: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between', // Para separar los botones
+    justifyContent: 'space-between',
     padding: 10,
-    backgroundColor: '#f5f5f5', // Fondo claro para la barra superior}
+    backgroundColor: '#f5f5f5',
   },
   topComponent3: {
-    backgroundColor: '#f5f5f5', // Fondo claro para la barra superior}
+    backgroundColor: '#f5f5f5',
   },
   button: {
     padding: 10,
@@ -166,7 +177,6 @@ const lightStyles = StyleSheet.create({
   },
   plusButton: {
     margin: 20,
-    size: 0,
     alignSelf: 'flex-end',
     backgroundColor: 'blue',
     borderRadius: 30,
@@ -176,24 +186,24 @@ const lightStyles = StyleSheet.create({
 const darkStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#121212', // Fondo oscuro para la pantalla
+    backgroundColor: '#121212',
   },
   topComponent: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between', // Para separar los botones
+    justifyContent: 'space-between',
     padding: 10,
     paddingTop: 60,
-    backgroundColor: '#1E1E1E', // Fondo oscuro para la barra superior
+    backgroundColor: '#1E1E1E',
   },
   topComponent2: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between', // Para separar los botones
-    backgroundColor: '#1E1E1E', // Fondo oscuro para la barra superior
+    justifyContent: 'space-between',
+    backgroundColor: '#1E1E1E',
   },
   topComponent3: {
-    backgroundColor: '#1E1E1E', // Fondo oscuro para la barra superior
+    backgroundColor: '#1E1E1E',
   },
   button: {
     padding: 10,
@@ -215,9 +225,8 @@ const darkStyles = StyleSheet.create({
   },
   plusButton: {
     margin: 20,
-    size: 0,
     alignSelf: 'flex-end',
-    backgroundColor: '#BB86FC', // Color morado para el botón +
+    backgroundColor: '#BB86FC',
     borderRadius: 30,
   },
 });

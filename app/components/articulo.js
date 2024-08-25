@@ -1,25 +1,19 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import Checkbox from 'expo-checkbox'; // Asegúrate de instalar expo-checkbox
 import { useTheme } from '../controllers/controladorContexto';
 
-export default function Articulo({ imageSource, nombreArticulo }) {
+export default function Articulo({ imageSource, nombreArticulo, checked, onToggle }) {
   const { isDarkMode } = useTheme();
   const styles = isDarkMode ? darkStyles : lightStyles;
 
-  const [checked, setChecked] = useState(false);
-
-  const toggleCheckBox = () => {
-    setChecked(!checked);
-  };
-
   return (
-    <TouchableOpacity style={styles.container} onPress={toggleCheckBox}>
+    <TouchableOpacity style={styles.container} onPress={onToggle}>
       <Image source={imageSource} style={styles.image} />
       <Text style={styles.nombre}>{nombreArticulo}</Text>
       <Checkbox
         value={checked}
-        onValueChange={toggleCheckBox}
+        onValueChange={onToggle}
         style={styles.checkbox}
       />
     </TouchableOpacity>

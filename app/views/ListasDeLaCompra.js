@@ -1,16 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Articulo from '../components/articulo'; // Ajusta la ruta según tu estructura de archivos
-import { useTheme } from '../controllers/controladorContexto';
+import { useTheme, useRutinaId } from '../controllers/controladorContexto';
+import { ListaCompra } from '../models/modeloListaCompra';
 
 export default function ListasDeLaCompra() {
   const navigation = useNavigation();
+  const { lista, changeLista } = useRutinaId();
+  const [listaConcreta, setListaConcreta] = useState(null);
+  const [articulos, setArticulos] = useState([]);
+  const [seleccionados, setSeleccionados] = useState(new Set()); // Mantenemos un Set de IDs seleccionados
+  const { isDarkMode } = useTheme();
+  const styles = isDarkMode ? darkStyles : lightStyles;
 
-  const [articulos, setArticulos] = useState([
-    { id: '1', nombre: 'Manzanas', imageSource: 'https://via.placeholder.com/50?text=Manzana' },
-    { id: '2', nombre: 'Pan', imageSource: 'https://via.placeholder.com/50?text=Pan' },
-  ]);
+  useEffect(() => {
+    const fetchList = async () => {
+      if (lista) {
+        setArticulos(lista.articulos || []);
+      } else {
+        setArticulos([]);
+      }
+    };
+    fetchList();
+  }, [lista]); 
 
   const handleBackPress = () => {
     navigation.navigate('_sitemap');
@@ -20,8 +33,17 @@ export default function ListasDeLaCompra() {
     navigation.navigate('views/EditarListaDeLaCompra');
   };
 
-  const { isDarkMode } = useTheme();
-  const styles = isDarkMode ? darkStyles : lightStyles;
+  const toggleArticulo = (id) => {
+    setSeleccionados(prevSeleccionados => {
+      const nuevoSeleccionados = new Set(prevSeleccionados);
+      if (nuevoSeleccionados.has(id)) {
+        nuevoSeleccionados.delete(id);
+      } else {
+        nuevoSeleccionados.add(id);
+      }
+      return nuevoSeleccionados;
+    });
+  };
 
   return (
     <View style={styles.container}>
@@ -30,15 +52,21 @@ export default function ListasDeLaCompra() {
           <Text style={styles.backButtonText}>Volver</Text>
         </TouchableOpacity>
       </View>
-      <Text style={styles.titulo}>Lista de la Compra</Text>
+      <Text style={styles.titulo}>{lista.nombre || 'Lista de la Compra'}</Text>
       <ScrollView style={styles.articulosContainer}>
-        {articulos.map((articulo) => (
-          <Articulo
-            key={articulo.id}
-            imageSource={{ uri: articulo.imageSource }}
-            nombreArticulo={articulo.nombre}
-          />
-        ))}
+        {lista.articulos.length > 0 ? (
+          lista.articulos.map((articulo) => (
+            <Articulo
+              key={articulo.id}
+              imageSource={{ uri: articulo.imagen }}
+              nombreArticulo={articulo.nombre}
+              checked={seleccionados.has(articulo.id)}
+              onToggle={() => toggleArticulo(articulo.id)}
+            />
+          ))
+        ) : (
+          <Text style={styles.noArticulosText}>No hay artículos en la lista.</Text>
+        )}
       </ScrollView>
       <TouchableOpacity style={styles.botonListo} onPress={handleListoPress}>
         <Text style={styles.botonListoText}>Editar lista</Text>
@@ -91,6 +119,12 @@ const lightStyles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
+  noArticulosText: {
+    textAlign: 'center',
+    marginTop: 20,
+    fontSize: 16,
+    color: '#888',
+  },
 });
 
 const darkStyles = StyleSheet.create({
@@ -137,5 +171,11 @@ const darkStyles = StyleSheet.create({
     color: '#121212', // Color del texto en el botón en modo oscuro
     fontSize: 16,
     fontWeight: '600',
+  },
+  noArticulosText: {
+    textAlign: 'center',
+    marginTop: 20,
+    fontSize: 16,
+    color: '#aaa',
   },
 });
