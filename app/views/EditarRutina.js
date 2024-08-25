@@ -6,7 +6,7 @@ import { useTheme, useDay, useRutinaId } from '../controllers/controladorContext
 import { Rutina } from '../models/rutina'; // Importa el modelo Rutina
 
 const EditarRutina = () => {
-  const { rutinaId, changeStateTrue, changeStateFalse, changeActividad } = useRutinaId();
+  const { rutinaId, changeStateTrue, changeStateFalse, changeActividad, changeNotificacion } = useRutinaId();
   const { selectedDay } = useDay();
   const route = useRoute(); // Hook para obtener los parámetros de navegación
   const navigation = useNavigation();
@@ -23,6 +23,7 @@ const EditarRutina = () => {
     const cargarRutina = async () => {
       try {
         const rutinaCargada = await Rutina.getRutinaPorId(rutinaId);
+        changeNotificacion(rutinaCargada.notificacion)
         setRutina(rutinaCargada);
         // Verifica que rutinaCargada y rutinaCargada.actividades estén definidos
         setActividades(rutinaCargada?.actividades || []);

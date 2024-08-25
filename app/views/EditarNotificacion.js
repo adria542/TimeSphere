@@ -1,14 +1,37 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Switch, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
-import { useTheme } from '../controllers/controladorContexto';
+import { useTheme, useRutinaId, useDay} from '../controllers/controladorContexto';
 import { useNavigation } from '@react-navigation/native';
+import { Notificacion } from '../models/modeloNotificacion';
 
 export default function EditarNotificacion() {
   const [textoNotificacion, setTextoNotificacion] = useState('');
   const [sonidoActivado, setSonidoActivado] = useState(false);
   const [vibracionActivada, setVibracionActivada] = useState(false);
   const { isDarkMode } = useTheme();
+  const {changeNotificacion, notificacion, rutinaId} = useRutinaId();
   const styles = isDarkMode ? darkStyles : lightStyles;
+
+  useEffect(() => {
+    const cargarNotificacion = async () => {
+      if (notificacion) {
+        try {
+          console.log(notificacion)
+          if (notificacion) {
+            setTextoNotificacion(notificacion.titulo);
+            setVibracionActivada(notificacion.vibracion);
+            setSonidoActivado(notificacion.sonido)
+          } else {
+            console.log('No se encontró una entrada de diario para este día.');
+          }
+        } catch (error) {
+          console.error('Error al cargar el diario:', error);
+        }
+      }
+    };
+
+    cargarNotificacion();
+  }, [notificacion]);
 
   const handleGuardar = () => {
     // Aquí puedes manejar la lógica para guardar la configuración de la notificación
@@ -17,6 +40,14 @@ export default function EditarNotificacion() {
       sonidoActivado,
       vibracionActivada,
     });
+    const not = new Notificacion(
+      'D' + Date.now().toString(),
+      true,
+      sonidoActivado,
+      vibracionActivada,
+      textoNotificacion,
+    );
+    changeNotificacion(not)
     navigation.navigate('views/CrearRutina');
   };
 

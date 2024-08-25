@@ -1,24 +1,55 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Switch, TouchableOpacity, StyleSheet, Platform, ScrollView } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import { useTheme } from '../controllers/controladorContexto';
-import { useDay } from '../controllers/controladorContexto';
-import { Rutina } from '../models/rutina'; // Importa el modelo Rutina
+import { useTheme, useDay, useRutinaId } from '../controllers/controladorContexto';
+import { Rutina } from '../models/rutina';
 import { Notificacion } from '../models/modeloNotificacion';
 
 export default function CrearRutina() {
+  const { changeNotificacion, rutinaId, notificacion } = useRutinaId();
   const { selectedDay } = useDay();
   const navigation = useNavigation();
   const [titulo, setTitulo] = useState('');
   const [horaInicio, setHoraInicio] = useState(new Date());
   const [mostrarHoraPicker, setMostrarHoraPicker] = useState(false);
-  const [actividades, setActividades] = useState([])
-  const [notificacion, setNotificacion] = useState(new Notificacion('N' + Date.now().toString(), false, false, false, 'notificación'))
+  const [actividades, setActividades] = useState([]);
   const [notificacionesActivadas, setNotificacionesActivadas] = useState(false);
   const { isDarkMode } = useTheme();
   const styles = isDarkMode ? darkStyles : lightStyles;
+
+  useEffect(() => {
+    const cargarDatosRutina = async () => {
+      try {
+        // Obtener la rutina por su ID
+        const rutina = await Rutina.getRutinaPorId(rutinaId);
+        
+        if (rutina) {
+          // Establecer el título de la rutina
+          setTitulo(rutina.titulo);
+          
+          // Establecer la hora de inicio si está disponible
+          if (rutina.hora) {
+            const [hours, minutes] = rutina.hora.split(':');
+            const date = new Date();
+            date.setHours(hours);
+            date.setMinutes(minutes);
+            setHoraInicio(date);
+          }
+
+          // Establecer el estado de la notificación
+          if (rutina.notificacion) {
+            setNotificacionesActivadas(rutina.notificacion.activa);
+          }
+        }
+      } catch (error) {
+        console.error('Error al cargar la rutina:', error);
+      }
+    };
+
+    cargarDatosRutina();
+  }, [rutinaId]);
 
   const onChangeHora = (event, selectedDate) => {
     const currentDate = selectedDate || horaInicio;
@@ -32,18 +63,16 @@ export default function CrearRutina() {
   };
 
   const handleHecho = async () => {
-      try {
+    try {
       const nuevaRutina = new Rutina(
-        // Genera un ID único para la rutina, por ejemplo usando un timestamp
-        Date.now().toString(), 
-        actividades, // Puedes inicializar con actividades si tienes alguna
-        notificacion, // Inicializa notificaciones si es necesario
+        rutinaId, 
+        actividades,
+        notificacion,
         horaInicio.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        'https://firebasestorage.googleapis.com/v0/b/timesphere-b6efd.appspot.com/o/png-clipart-symbolize-x.png?alt=media&token=9cff17e8-cfa9-4e0b-b207-827b8251304e', // Inicializa con una imagen si es necesario
+        'https://firebasestorage.googleapis.com/v0/b/timesphere-b6efd.appspot.com/o/png-clipart-symbolize-x.png?alt=media&token=9cff17e8-cfa9-4e0b-b207-827b8251304e', 
         titulo
       );
-      await nuevaRutina.save(selectedDay); // Guarda la rutina en la base de datos
-      // Navega a la vista principal o a donde quieras después de guardar
+      await nuevaRutina.save(selectedDay);
       navigation.navigate('_sitemap', { refresh: true });
     } catch (error) {
       console.error("Error guardando la rutina:", error);
@@ -55,8 +84,7 @@ export default function CrearRutina() {
   };
 
   const handleModificarNotificacion = () => {
-    // Lógica para modificar la notificación
-    console.log('Modificar notificación');
+    changeNotificacion(notificacion);
     navigation.navigate('views/EditarNotificacion');
   };
 
@@ -70,7 +98,7 @@ export default function CrearRutina() {
       <TextInput
         style={styles.input}
         placeholder="Ingrese el título de la rutina"
-        placeholderTextColor={isDarkMode ? '#B0B0B0' : '#6e6e6e'} // Placeholder color en modo oscuro
+        placeholderTextColor={isDarkMode ? '#B0B0B0' : '#6e6e6e'}
         value={titulo}
         onChangeText={setTitulo}
       />
@@ -116,9 +144,7 @@ export default function CrearRutina() {
           style={styles.modifyNotificationButton}
           onPress={handleModificarNotificacion}
         >
-          <Text style={styles.modifyNotificationText}>
-            Modificar Notificación
-          </Text>
+          <Text style={styles.modifyNotificationText}>Modificar Notificación</Text>
         </TouchableOpacity>
       </View>
 
@@ -134,7 +160,7 @@ const lightStyles = StyleSheet.create({
     flexGrow: 1,
     padding: 20,
     backgroundColor: '#fff',
-    justifyContent: 'center', // Distribuye el contenido
+    justifyContent: 'center',
   },
   backButton: {
     position: 'absolute',
@@ -150,7 +176,7 @@ const lightStyles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
     marginBottom: 10,
-    color: '#000', // Color del texto
+    color: '#000',
   },
   input: {
     borderWidth: 1,
@@ -159,7 +185,7 @@ const lightStyles = StyleSheet.create({
     padding: 10,
     fontSize: 16,
     marginBottom: 20,
-    color: '#000', // Color del texto del input
+    color: '#000',
   },
   section: {
     flexDirection: 'row',
@@ -179,17 +205,17 @@ const lightStyles = StyleSheet.create({
   timeText: {
     fontSize: 16,
     marginLeft: 10,
-    color: '#000', // Color del texto de la hora
+    color: '#000',
   },
   switch: {
     marginRight: 20,
   },
   modifyNotificationButtonContainer: {
-    minHeight: 50, // Reserva espacio para el botón
-    justifyContent: 'center', // Centra verticalmente el botón
+    minHeight: 50,
+    justifyContent: 'center',
   },
   hidden: {
-    opacity: 0, // Oculta el botón pero reserva el espacio
+    opacity: 0,
   },
   modifyNotificationButton: {
     backgroundColor: '#007BFF',
@@ -215,7 +241,7 @@ const lightStyles = StyleSheet.create({
     fontWeight: '600',
   },
   iconColor: {
-    color: '#000', // Color del icono en modo claro
+    color: '#000',
   },
 });
 
@@ -223,8 +249,8 @@ const darkStyles = StyleSheet.create({
   container: {
     flexGrow: 1,
     padding: 20,
-    backgroundColor: '#121212', // Fondo oscuro
-    justifyContent: 'center', // Distribuye el contenido
+    backgroundColor: '#121212',
+    justifyContent: 'center',
   },
   backButton: {
     position: 'absolute',
@@ -233,24 +259,24 @@ const darkStyles = StyleSheet.create({
     marginBottom: 20,
   },
   backButtonText: {
-    color: '#BB86FC', // Color del texto en modo oscuro
+    color: '#BB86FC',
     fontSize: 16,
   },
   label: {
     fontSize: 18,
     fontWeight: '600',
     marginBottom: 10,
-    color: '#fff', // Color del texto en modo oscuro
+    color: '#fff',
   },
   input: {
     borderWidth: 1,
-    borderColor: '#333', // Color del borde en modo oscuro
+    borderColor: '#333',
     borderRadius: 5,
     padding: 10,
     fontSize: 16,
     marginBottom: 20,
-    color: '#fff', // Color del texto del input en modo oscuro
-    backgroundColor: '#1e1e1e', // Fondo del input en modo oscuro
+    color: '#fff',
+    backgroundColor: '#1e1e1e',
   },
   section: {
     flexDirection: 'row',
@@ -262,7 +288,7 @@ const darkStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#333', // Color del borde en modo oscuro
+    borderColor: '#333',
     borderRadius: 5,
     padding: 10,
     maxWidth: '70%',
@@ -270,20 +296,20 @@ const darkStyles = StyleSheet.create({
   timeText: {
     fontSize: 16,
     marginLeft: 10,
-    color: '#fff', // Color del texto de la hora en modo oscuro
+    color: '#fff',
   },
   switch: {
     marginRight: 20,
   },
   modifyNotificationButtonContainer: {
-    minHeight: 50, // Reserva espacio para el botón
-    justifyContent: 'center', // Centra verticalmente el botón
+    minHeight: 50,
+    justifyContent: 'center',
   },
   hidden: {
-    opacity: 0, // Oculta el botón pero reserva el espacio
+    opacity: 0,
   },
   modifyNotificationButton: {
-    backgroundColor: '#BB86FC', // Botón de notificación en modo oscuro
+    backgroundColor: '#BB86FC',
     padding: 15,
     borderRadius: 5,
     alignItems: 'center',
@@ -294,7 +320,7 @@ const darkStyles = StyleSheet.create({
     fontWeight: '600',
   },
   doneButton: {
-    backgroundColor: '#03DAC6', // Botón "Hecho" en modo oscuro
+    backgroundColor: '#03DAC6',
     padding: 15,
     borderRadius: 5,
     alignItems: 'center',
@@ -306,6 +332,6 @@ const darkStyles = StyleSheet.create({
     fontWeight: '600',
   },
   iconColor: {
-    color: '#fff', // Color del icono en modo oscuro
+    color: '#fff',
   },
 });

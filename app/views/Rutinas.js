@@ -7,9 +7,9 @@ import { useTheme } from '../controllers/controladorContexto';
 import { useDay, useRutinaId } from '../controllers/controladorContexto';
 import { Rutina } from '../models/rutina'; // Importa el modelo Rutina
 import DaySelector from '../components/barraSemanal'; // Ajusta la ruta según sea necesario
-
+import { Notificacion } from '../models/modeloNotificacion';
 export default function Rutinas() {
-  const { changeRutina } = useRutinaId();
+  const { changeRutina, changeNotificacion } = useRutinaId();
   const { selectedDay } = useDay();
   const navigation = useNavigation();
   const isFocused = useIsFocused(); // Hook para saber si la pantalla está enfocada
@@ -38,6 +38,7 @@ export default function Rutinas() {
 
   const handlePress = async (rutinaId) => {
     await changeRutina(rutinaId)
+    changeNotificacion(new Notificacion ('N' + date, false, false, false, 'notificacion'));
     navigation.navigate('views/EditarRutina');
   };
 
@@ -45,7 +46,10 @@ export default function Rutinas() {
     navigation.navigate('views/Opciones');
   };
 
-  const handlePressPlus = () => {
+  const handlePressPlus = async () => {
+    const date = Date.now().toString();
+    await changeRutina(date);
+    changeNotificacion(new Notificacion ('N' + date, false, false, false, 'notificacion'));
     navigation.navigate('views/CrearRutina');
   };
 
