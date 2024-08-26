@@ -1,56 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { View, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import RutinaComponent from '../components/rutinas';
-import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
-import { useTheme } from '../controllers/controladorContexto';
-import { useDay, useRutinaId } from '../controllers/controladorContexto';
-import { Rutina } from '../models/rutina'; // Importa el modelo Rutina
 import DaySelector from '../components/barraSemanal'; // Ajusta la ruta según sea necesario
-import { Notificacion } from '../models/modeloNotificacion';
+import { useRutinasController } from '../controllers/controladorRutinas'; // Importa el controlador
+
 export default function Rutinas() {
-  const { changeRutina, changeNotificacion } = useRutinaId();
-  const { selectedDay } = useDay();
-  const navigation = useNavigation();
-  const isFocused = useIsFocused(); // Hook para saber si la pantalla está enfocada
-  const { isDarkMode } = useTheme();
+  const {
+    rutinas,
+    isDarkMode,
+    handlePress,
+    handlePressOptions,
+    handlePressPlus,
+  } = useRutinasController();
+
   const styles = isDarkMode ? darkStyles : lightStyles;
-
-  // Estado para almacenar las rutinas cargadas desde Firebase
-  const [rutinas, setRutinas] = useState([]);
-
-  // Cargar rutinas desde Firebase cuando el componente se monta o cuando la pantalla está enfocada
-  useEffect(() => {
-    const cargarRutinas = async () => {
-      try {
-        const rutinasCargadas = await Rutina.getRutinasPorDia(selectedDay);
-        console.log('Rutinas Cargadas:', rutinasCargadas);
-        setRutinas(rutinasCargadas);
-      } catch (error) {
-        console.error("Error cargando rutinas:", error);
-      }
-    };
-
-    if (isFocused) {
-      cargarRutinas();
-    }
-  }, [selectedDay, isFocused]);
-
-  const handlePress = async (rutinaId) => {
-    await changeRutina(rutinaId)
-    navigation.navigate('views/EditarRutina');
-  };
-
-  const handlePressOptions = () => {
-    navigation.navigate('views/Opciones');
-  };
-
-  const handlePressPlus = async () => {
-    const date = Date.now().toString();
-    await changeRutina(date);
-    changeNotificacion(new Notificacion ('N' + date, false, false, false, 'notificacion'));
-    navigation.navigate('views/CrearRutina');
-  };
 
   return (
     <View style={styles.container}>
