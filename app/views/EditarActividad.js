@@ -1,103 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import { useNavigation, useIsFocused } from '@react-navigation/native';
-import { useTheme, useRutinaId } from '../controllers/controladorContexto';
-import { Rutina } from '../models/rutina';
-import { Actividad } from '../models/modeloActividad';
-import { useDay } from '../controllers/controladorContexto';
+import { useTheme } from '../controllers/controladorContexto';
+import { useEditarActividad } from '../controllers/controladorEditarActividades';
 
 export default function EditarActividad() {
-  const { selectedDay } = useDay();
-  const { rutinaId, editandoActividad, actividadId } = useRutinaId();
-  const [titulo, setTitulo] = useState('');
-  const [duracion, setDuracion] = useState('');
-  const [tipoActividad, setTipoActividad] = useState('Deporte');
+  const {
+    titulo,
+    setTitulo,
+    duracion,
+    setDuracion,
+    tipoActividad,
+    setTipoActividad,
+    tiposActividad,
+    handleSave,
+    handleBackPress,
+  } = useEditarActividad();
+
   const { isDarkMode } = useTheme();
   const styles = isDarkMode ? darkStyles : lightStyles;
-  const navigation = useNavigation();
-  const isFocused = useIsFocused(); // Hook para saber si la pantalla está enfocada
-
-  const tiposActividad = ['Deporte', 'Estudio', 'Relajación', 'Trabajo'];
-
-  useEffect(() => {
-    console.log(editandoActividad)
-    if (editandoActividad) {
-      // Cargar los detalles de la actividad cuando editandoActividad es true
-      const fetchActividad = async () => {
-        try {
-          // Obtener la rutina actual y buscar la actividad por ID
-          const rutina = await Rutina.getRutinaPorId(rutinaId);
-          if (rutina) {
-            const actividad = rutina.actividades.find(act => act.id === actividadId);
-            if (actividad) {
-              setTitulo(actividad.nombre);
-              setDuracion(actividad.duracion.toString());
-              setTipoActividad(actividad.tipo);
-            }
-          }
-          else {
-            setTitulo('');
-            setDuracion('');
-            setTipoActividad('Deporte');
-          }
-        } catch (error) {
-          console.error('Error al cargar la actividad:', error);
-        }
-      };
-      if (isFocused) {
-        fetchActividad();
-      }
-    }
-  }, [editandoActividad, actividadId, rutinaId, isFocused]);
-
-  const handleSave = async () => {
-    try {
-      if (editandoActividad) {
-        // Actualizar la actividad existente
-        const rutina = await Rutina.getRutinaPorId(rutinaId);
-        if (rutina) {
-          const actividadIndex = rutina.actividades.findIndex(act => act.id === actividadId);
-          if (actividadIndex > -1) {
-            rutina.actividades[actividadIndex] = new Actividad(
-              actividadId, // Usar el mismo ID para actualizar
-              titulo,
-              tipoActividad,
-              'https://firebasestorage.googleapis.com/v0/b/timesphere-b6efd.appspot.com/o/png-clipart-symbolize-x.png?alt=media&token=9cff17e8-cfa9-4e0b-b207-827b8251304e',
-              parseInt(duracion, 10)
-            );
-            await rutina.save(selectedDay);
-          }
-        }
-      } else {
-        // Crear una nueva actividad
-        const nuevaActividad = new Actividad(
-          'A' + Date.now().toString(),
-          titulo,
-          tipoActividad,
-          'https://firebasestorage.googleapis.com/v0/b/timesphere-b6efd.appspot.com/o/png-clipart-symbolize-x.png?alt=media&token=9cff17e8-cfa9-4e0b-b207-827b8251304e',
-          parseInt(duracion, 10)
-        );
-
-        // Obtener la rutina actual y añadir la nueva actividad
-        const rutina = await Rutina.getRutinaPorId(rutinaId);
-        console.log(rutina.notificacion.id)
-        if (rutina) {
-          rutina.actividades.push(nuevaActividad);
-          await rutina.save(selectedDay);
-        }
-      }
-
-      // Navegar de vuelta a la vista de edición de rutina
-      navigation.navigate('views/EditarRutina');
-    } catch (error) {
-      console.error('Error al guardar la actividad:', error);
-    }
-  };
-
-  const handleBackPress = () => {
-    navigation.navigate('views/EditarRutina');
-  };
 
   return (
     <ScrollView style={styles.container}>

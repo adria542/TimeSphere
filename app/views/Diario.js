@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Image, TouchableOpacity, TextInput, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import { useTheme, useDay } from '../controllers/controladorContexto';
-import { DiarioModelo } from '../models/modeloDiario';
+import { useDiarioController } from '../controllers/controladorDiario';
 
-// Definir las rutas de las imágenes y URLs en un objeto
 const estadosAnimo = {
   0: require('../components/Asests/png-clipart-symbolize-x.png'),
   1: require('../components/Asests/CaraFeliz.png'),
@@ -13,7 +11,7 @@ const estadosAnimo = {
 
 export default function Diario() {
   const { diaDiario } = useDay();
-  const navigation = useNavigation();
+  const { cargarDiario, guardarDiario, handleBackPress } = useDiarioController();
   const { isDarkMode } = useTheme();
   const styles = isDarkMode ? darkStyles : lightStyles;
 
@@ -21,25 +19,15 @@ export default function Diario() {
   const [textoDiario, setTextoDiario] = useState('');
 
   useEffect(() => {
-    const cargarDiario = async () => {
-      if (diaDiario) {
-        try {
-          const diarios = await DiarioModelo.getDiarioPorDia(diaDiario);
-          if (diarios.length > 0) {
-            const diario = diarios[0]; // Asumiendo que solo hay una entrada por día
-            setEstadoEmocional(diario.estadoEmocional);
-            setTextoDiario(diario.entradaDiario);
-          } else {
-            console.log('No se encontró una entrada de diario para este día.');
-          }
-        } catch (error) {
-          console.error('Error al cargar el diario:', error);
-        }
+    const fetchData = async () => {
+      const diario = await cargarDiario();
+      if (diario) {
+        setEstadoEmocional(diario.estadoEmocional);
+        setTextoDiario(diario.entradaDiario);
       }
     };
-
-    cargarDiario();
-  }, [diaDiario]);
+    fetchData();
+  }, [cargarDiario]);
 
   const getFormattedDate = () => {
     if (diaDiario) {
@@ -52,30 +40,10 @@ export default function Diario() {
     return 'Fecha no disponible';
   };
 
-  const getEstadoAnimo = (int) => {
-    if (estadosAnimo[int]) {
-      return estadosAnimo[int];
-    }
-    return null;
-  };
-
-  const handleBackPress = () => {
-    navigation.navigate('_sitemap');
-  };
+  const getEstadoAnimo = (int) => estadosAnimo[int] || null;
 
   const handleSavePress = async () => {
-    try {
-      const entradaDiario = new DiarioModelo(
-        'D' + Date.now().toString(), 
-        estadoEmocional,
-        textoDiario
-      );
-      await entradaDiario.GuardarDiario(diaDiario);
-      console.log('Datos guardados', entradaDiario);
-    } catch (error) {
-      console.error('Error guardando el diario:', error);
-    }
-    navigation.navigate('_sitemap');
+    await guardarDiario(estadoEmocional, textoDiario);
   };
 
   return (
@@ -172,11 +140,6 @@ const lightStyles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  emocionImagen: {
-    width: 50,
-    height: 50,
-    marginRight: 20,
-  },
   seleccionEmocion: {
     flexDirection: 'row',
   },
@@ -254,11 +217,6 @@ const darkStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-  },
-  emocionImagen: {
-    width: 50,
-    height: 50,
-    marginRight: 20,
   },
   seleccionEmocion: {
     flexDirection: 'row',

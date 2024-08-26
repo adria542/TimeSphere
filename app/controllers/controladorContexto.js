@@ -45,6 +45,7 @@ export const RutinaProvider = ({ children }) => {
   const [rutinaId, setRutinaId] = useState(null); // Por defecto, el día actual
   const [notificacion, setNotificacion] = useState(null)
   const [lista, setLista] = useState(null)
+  const [filtros, setFiltros] = useState([])
 
   const changeRutina = (rutinaId) => {
     setRutinaId(rutinaId);
@@ -63,9 +64,11 @@ export const RutinaProvider = ({ children }) => {
   };
   const changeLista = (Lista) => {
     setLista(Lista);
+  };const changeFiltros = (filtros) => {
+    setFiltros(filtros);
   };
   return (
-    <RutinaContext.Provider value={{ rutinaId, editandoActividad, actividadId, notificacion, lista, changeLista, changeNotificacion, changeActividad, changeStateTrue, changeStateFalse, changeRutina}}>
+    <RutinaContext.Provider value={{ rutinaId, editandoActividad, actividadId, notificacion, lista, filtros, changeFiltros, changeLista, changeNotificacion, changeActividad, changeStateTrue, changeStateFalse, changeRutina}}>
       {children}
     </RutinaContext.Provider>
   );

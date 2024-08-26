@@ -1,37 +1,15 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+// Filtros.js
+
+import React from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import Checkbox from 'expo-checkbox';
-import { useNavigation } from '@react-navigation/native';
 import { useTheme } from '../controllers/controladorContexto';
+import { useFiltros } from '../controllers/controladorFiltros';
 
 const Filtros = () => {
-  const navigation = useNavigation();
   const { isDarkMode } = useTheme();
   const styles = isDarkMode ? darkStyles : lightStyles;
-  
-  // Estado para manejar los checkboxes
-  const [checkedItems, setCheckedItems] = useState({});
-
-  // Maneja el toque en el botón "Volver"
-  const handleBackPress = () => {
-    navigation.navigate('_sitemap');
-  };
-
-  // Maneja el cambio en el checkbox
-  const handleCheckboxChange = (id) => {
-    setCheckedItems(prevState => ({
-      ...prevState,
-      [id]: !prevState[id], // Cambia el estado actual del checkbox
-    }));
-  };
-
-  // Tipos de accesibilidad
-  const accesibilidad = [
-    { id: 1, titulo: 'Rampas' },
-    { id: 2, titulo: 'Baños accesibles' },
-    { id: 3, titulo: 'Espacios amplios' },
-    { id: 4, titulo: 'Señalización Braille' },
-  ];
+  const { checkedItems, handleCheckboxChange, handleBackPress, accesibilidad } = useFiltros();
 
   return (
     <View style={styles.container}>

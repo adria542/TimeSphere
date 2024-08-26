@@ -1,19 +1,18 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Text, View, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
 import Supermercado from '../components/supermercados';
 import Compra from '../components/compra';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useTheme, useRutinaId } from '../controllers/controladorContexto';
-import { ListaCompra } from '../models/modeloListaCompra'; // Importa la clase ListaCompra del modelo
-import { Supermercado as SupermercadoModel } from '../models/modeloSupermercado'; // Importa la clase Supermercado del modelo
+import { useSupermercadosController } from '../controllers/supermercadosController';
+import { ListaCompra } from '../models/modeloListaCompra';
 
 export default function Supermercados() {
+  const [ubicacionInicial, setUbicacionInicial] = useState({latitude: 39.2855, longitude: 0.2128});
   const { lista, changeLista } = useRutinaId();
   const [selectedButton, setSelectedButton] = useState('left'); // Estado para seguir el botón seleccionado
-  const [listasCompra, setListasCompra] = useState([]); // Estado para almacenar las listas de la compra
-  const [supermercados, setSupermercados] = useState([]); // Estado para almacenar los supermercados
-  const [loading, setLoading] = useState(true); // Estado para manejar el indicador de carga
+  const { listasCompra, supermercados, loading, cargarDatos } = useSupermercadosController(ubicacionInicial);
   const navigation = useNavigation();
   const { isDarkMode } = useTheme();
   const styles = isDarkMode ? darkStyles : lightStyles;
@@ -29,43 +28,24 @@ export default function Supermercados() {
     navigation.navigate('views/ListasDeLaCompra');
   };
 
-  const handleAñadir = () => {
+  const handleAñadir = async () => {
     // Navega a la pantalla EditarListaDeLaCompra
+    const lista = new ListaCompra('L'+ Date.now().toString(), 'nueva lista de la compra', [])
+    await lista.save();
+    await changeLista(lista);
     navigation.navigate('views/EditarListaDeLaCompra');
-  };
-
-  const handlePressOptions = () => {
-    // Navega a la pantalla Opciones
-    navigation.navigate('views/Opciones');
   };
 
   useFocusEffect(
     useCallback(() => {
-      const cargarDatos = async () => {
-        setLoading(true);
-        try {
-          // Cargar listas de compra
-          const listasRecuperadas = await ListaCompra.getTodasLasListasDeCompra();
-          setListasCompra(listasRecuperadas);
-
-          // Cargar supermercados
-          const supermercadosRecuperados = await SupermercadoModel.getTodosLosSupermercados();
-          setSupermercados(supermercadosRecuperados);
-        } catch (error) {
-          console.error('Error al cargar los datos:', error);
-        } finally {
-          setLoading(false);
-        }
-      };
-
       cargarDatos();
-    }, [])
+    }, [cargarDatos])
   );
 
   return (
     <View style={styles.container}>
       <View style={styles.topComponent}>
-        <TouchableOpacity style={styles.backButton} onPress={handlePressOptions}>
+        <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('views/Opciones')}>
           <MaterialIcons name="settings" size={24} color={isDarkMode ? "#BB86FC" : "blue"} />
         </TouchableOpacity>
       </View>

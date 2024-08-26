@@ -23,7 +23,8 @@ export class ListaCompra {
       const data = listaSnapshot.data();
       console.log('Datos de la lista:', data);
   
-      const articulos = Array.isArray(data.articulos) ? await Promise.all(
+      // Verifica si hay artículos en la lista
+      const articulos = Array.isArray(data.articulos) && data.articulos.length > 0 ? await Promise.all(
         data.articulos.map(async (articuloId) => {
           const articuloRef = doc(db, 'TimeSphere', 'supermercado', 'articulos', articuloId);
           const articuloSnapshot = await getDoc(articuloRef);
@@ -37,21 +38,20 @@ export class ListaCompra {
           }
           return null;
         })
-      ) : [];
-      const retur = new ListaCompra(
+      ) : []; // Si no hay artículos, devuelve un array vacío
+  
+      const listaCompra = new ListaCompra(
         id,
         data.nombre,
-        articulos,
+        articulos.filter(articulo => articulo !== null) // Filtra los artículos no encontrados
       );
-      console.log('Artículos:', articulos[0].nombre + 'resulta en :' + retur);
   
-      return retur;
+      return listaCompra;
     } catch (error) {
       console.error('Error al recuperar la lista de la compra por ID:', error);
       return null;
     }
   }
-  
   
   // Método estático para recuperar todas las listas de la compra desde Firebase
   static async getTodasLasListasDeCompra() {
@@ -63,8 +63,8 @@ export class ListaCompra {
       for (const docSnapshot of listasSnapshot.docs) {
         const data = docSnapshot.data();
   
-        // Verifica que 'articulos' es un array
-        const articulos = Array.isArray(data.articulos) ? await Promise.all(
+        // Verifica si hay artículos en la lista
+        const articulos = Array.isArray(data.articulos) && data.articulos.length > 0 ? await Promise.all(
           data.articulos.map(async (articuloId) => {
             const articuloRef = doc(db, 'TimeSphere', 'supermercado', 'articulos', articuloId);
             const articuloSnapshot = await getDoc(articuloRef);
@@ -77,7 +77,7 @@ export class ListaCompra {
             }
             return null; // Maneja el caso en que el artículo no existe
           })
-        ) : []; // Si 'articulos' no es un array, usa un array vacío
+        ) : []; // Si no hay artículos, devuelve un array vacío
   
         listasDeCompra.push(new ListaCompra(
           docSnapshot.id,
@@ -97,9 +97,11 @@ export class ListaCompra {
   async save() {
     try {
       const listaRef = doc(db, 'TimeSphere', 'supermercado', 'listaDeLaCompra', this.id);
+
+      // Verifica si hay artículos y guarda sus IDs, o un array vacío si no hay artículos
       await setDoc(listaRef, {
         nombre: this.nombre,
-        articulos: this.articulos.map(articulo => articulo.id) // Guarda solo los IDs de los artículos
+        articulos: this.articulos.length > 0 ? this.articulos.map(articulo => articulo.id) : [] // Guarda solo los IDs de los artículos si existen
       });
     } catch (error) {
       console.error('Error al guardar la lista de la compra:', error);

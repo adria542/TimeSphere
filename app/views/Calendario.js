@@ -1,44 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import { Calendar } from 'react-native-calendars';
-import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useTheme } from '../controllers/controladorContexto';
-import { useDay } from '../controllers/controladorContexto';
+import { useCalendarioController } from '../controllers/controladorCalendario';
 
 export default function Calendario() {
-  const { selectedDay, changeDay, changeDayDiario } = useDay();
-  const navigation = useNavigation();
+  const { handleDayPress, handlePressOptions } = useCalendarioController();
+  const { isDarkMode } = useTheme();
   const [selectedButton, setSelectedButton] = useState('left');
   const [selectedDate, setSelectedDate] = useState('');
-  const { isDarkMode } = useTheme();
-  const isFocused = useIsFocused(); // Hook para saber si la pantalla está enfocada
   const [calendarKey, setCalendarKey] = useState(0); // Key para forzar el re-render
+  const styles = isDarkMode ? darkStyles : lightStyles;
 
-  // Manejar el evento de presionar un día en el calendario
-  const onDayPress = (day) => {
-    if (selectedButton === 'right') { // Si el botón seleccionado es "Diario"
-      changeDayDiario(new Date(day.dateString))
-      console.log(day.dateString)
-      setSelectedDate(day.dateString);
-      navigation.navigate('views/Diario');
-    } else if (selectedButton === 'left') { // Si el botón seleccionado es "Calendario"
-      changeDay(new Date(day.dateString));
-      console.log(day.dateString)
-      navigation.navigate('views/Rutinas');
-      navigation.navigate('Rutinas');
-    }
-  };
-
-  const handlePressOptions = () => {
-    navigation.navigate('views/Opciones');
-  };
-
-  // Efecto para actualizar la key del calendario y forzar un re-render cuando cambia el modo
   useEffect(() => {
     setCalendarKey(prevKey => prevKey + 1);
   }, [isDarkMode]);
-  const styles = isDarkMode ? darkStyles : lightStyles;
+
 
   return (
     <View style={styles.container}>
@@ -66,8 +44,8 @@ export default function Calendario() {
         </TouchableOpacity>
       </View>
       <Calendar
-        key={calendarKey} // Key para forzar el re-render
-        onDayPress={onDayPress}
+        key={calendarKey}
+        onDayPress={(day) => handleDayPress(day, selectedButton)}
         markedDates={{
           [selectedDate]: {
             selected: true,

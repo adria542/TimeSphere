@@ -1,65 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { View, Text, TextInput, Switch, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
-import { useTheme, useRutinaId, useDay} from '../controllers/controladorContexto';
-import { useNavigation } from '@react-navigation/native';
-import { Notificacion } from '../models/modeloNotificacion';
+import { useTheme } from '../controllers/controladorContexto';
+import { useEditarNotificacion } from '../controllers/controladorEditarNotificaciones';
 
 export default function EditarNotificacion() {
-  const [textoNotificacion, setTextoNotificacion] = useState('');
-  const [sonidoActivado, setSonidoActivado] = useState(false);
-  const [vibracionActivada, setVibracionActivada] = useState(false);
+  const {
+    textoNotificacion,
+    setTextoNotificacion,
+    sonidoActivado,
+    setSonidoActivado,
+    vibracionActivada,
+    setVibracionActivada,
+    handleGuardar,
+    handleBackPress,
+  } = useEditarNotificacion();
+
   const { isDarkMode } = useTheme();
-  const {changeNotificacion, notificacion, rutinaId} = useRutinaId();
   const styles = isDarkMode ? darkStyles : lightStyles;
-
-  useEffect(() => {
-    const cargarNotificacion = async () => {
-      if (notificacion) {
-        try {
-          console.log(notificacion)
-          if (notificacion) {
-            setTextoNotificacion(notificacion.titulo);
-            setVibracionActivada(notificacion.vibracion);
-            setSonidoActivado(notificacion.sonido)
-          } else {
-            console.log('No se encontró una entrada de diario para este día.');
-          }
-        } catch (error) {
-          console.error('Error al cargar el diario:', error);
-        }
-      }
-    };
-
-    cargarNotificacion();
-  }, [notificacion]);
-
-  const handleGuardar = () => {
-    // Aquí puedes manejar la lógica para guardar la configuración de la notificación
-    console.log('Configuración de notificación guardada:', {
-      textoNotificacion,
-      sonidoActivado,
-      vibracionActivada,
-    });
-    const not = new Notificacion(
-      'D' + Date.now().toString(),
-      true,
-      sonidoActivado,
-      vibracionActivada,
-      textoNotificacion,
-    );
-    changeNotificacion(not)
-    navigation.navigate('views/CrearRutina');
-  };
-
-  const navigation = useNavigation();
-
-  const handleBackPress = () => {
-    navigation.navigate('views/CrearRutina');
-  };
 
   return (
     <ScrollView style={styles.container}>
-
       <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>
         <Text style={styles.backButtonText}>Volver</Text>
       </TouchableOpacity>
@@ -167,7 +127,7 @@ const darkStyles = StyleSheet.create({
     flex: 1,
     padding: 20,
     paddingTop: 70,
-    backgroundColor: '#1e1e1e', // Fondo oscuro para el modo oscuro
+    backgroundColor: '#1e1e1e',
   },
   backButton: {
     marginBottom: 20,
@@ -181,7 +141,7 @@ const darkStyles = StyleSheet.create({
     fontWeight: '600',
     marginBottom: 20,
     textAlign: 'center',
-    color: '#e0e0e0', // Color del texto en modo oscuro
+    color: '#e0e0e0',
   },
   section: {
     marginBottom: 20,
@@ -195,16 +155,16 @@ const darkStyles = StyleSheet.create({
   label: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#e0e0e0', // Color del texto en modo oscuro
+    color: '#e0e0e0',
   },
   input: {
     borderWidth: 1,
-    borderColor: '#444', // Color del borde en modo oscuro
+    borderColor: '#444',
     borderRadius: 5,
     padding: 10,
     fontSize: 16,
-    color: '#e0e0e0', // Color del texto en el input
-    backgroundColor: '#333', // Fondo del input en modo oscuro
+    color: '#e0e0e0',
+    backgroundColor: '#333',
   },
   doneButton: {
     backgroundColor: '#007BFF',

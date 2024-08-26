@@ -2,15 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Switch, TouchableOpacity, StyleSheet, Platform, ScrollView } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { MaterialIcons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
-import { useTheme, useDay, useRutinaId } from '../controllers/controladorContexto';
-import { Rutina } from '../models/rutina';
-import { Notificacion } from '../models/modeloNotificacion';
+import { useTheme } from '../controllers/controladorContexto';
+import { useCrearRutinaController } from '../controllers/controladorCrearRutina';
 
 export default function CrearRutina() {
-  const { changeNotificacion, rutinaId, notificacion } = useRutinaId();
-  const { selectedDay } = useDay();
-  const navigation = useNavigation();
+  const { cargarDatosRutina, guardarRutina, handleBackPress, handleModificarNotificacion } = useCrearRutinaController();
   const [titulo, setTitulo] = useState('');
   const [horaInicio, setHoraInicio] = useState(new Date());
   const [mostrarHoraPicker, setMostrarHoraPicker] = useState(false);
@@ -20,36 +16,25 @@ export default function CrearRutina() {
   const styles = isDarkMode ? darkStyles : lightStyles;
 
   useEffect(() => {
-    const cargarDatosRutina = async () => {
-      try {
-        // Obtener la rutina por su ID
-        const rutina = await Rutina.getRutinaPorId(rutinaId);
-        
-        if (rutina) {
-          // Establecer el título de la rutina
-          setTitulo(rutina.titulo);
-          
-          // Establecer la hora de inicio si está disponible
-          if (rutina.hora) {
-            const [hours, minutes] = rutina.hora.split(':');
-            const date = new Date();
-            date.setHours(hours);
-            date.setMinutes(minutes);
-            setHoraInicio(date);
-          }
-
-          // Establecer el estado de la notificación
-          if (rutina.notificacion) {
-            setNotificacionesActivadas(rutina.notificacion.activa);
-          }
+    const fetchData = async () => {
+      const rutina = await cargarDatosRutina();
+      if (rutina) {
+        setTitulo(rutina.titulo);
+        if (rutina.hora) {
+          const [hours, minutes] = rutina.hora.split(':');
+          const date = new Date();
+          date.setHours(hours);
+          date.setMinutes(minutes);
+          setHoraInicio(date);
         }
-      } catch (error) {
-        console.error('Error al cargar la rutina:', error);
+        if (rutina.notificacion) {
+          setNotificacionesActivadas(rutina.notificacion.activa);
+        }
       }
     };
 
-    cargarDatosRutina();
-  }, [rutinaId]);
+    fetchData();
+  }, [cargarDatosRutina]);
 
   const onChangeHora = (event, selectedDate) => {
     const currentDate = selectedDate || horaInicio;
@@ -58,34 +43,11 @@ export default function CrearRutina() {
   };
 
   const toggleNotificaciones = () => {
-    notificacion.cambiarEstadoActiva();
     setNotificacionesActivadas((previousState) => !previousState);
   };
 
   const handleHecho = async () => {
-    try {
-      const nuevaRutina = new Rutina(
-        rutinaId, 
-        actividades,
-        notificacion,
-        horaInicio.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        'https://firebasestorage.googleapis.com/v0/b/timesphere-b6efd.appspot.com/o/png-clipart-symbolize-x.png?alt=media&token=9cff17e8-cfa9-4e0b-b207-827b8251304e', 
-        titulo
-      );
-      await nuevaRutina.save(selectedDay);
-      navigation.navigate('_sitemap', { refresh: true });
-    } catch (error) {
-      console.error("Error guardando la rutina:", error);
-    }
-  };
-
-  const handleBackPress = () => {
-    navigation.navigate('_sitemap');
-  };
-
-  const handleModificarNotificacion = () => {
-    changeNotificacion(notificacion);
-    navigation.navigate('views/EditarNotificacion');
+    await guardarRutina(titulo, horaInicio, actividades);
   };
 
   return (

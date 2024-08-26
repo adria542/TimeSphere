@@ -1,97 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator, TextInput } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import Articulo from '../components/articulo'; // Ajusta la ruta según tu estructura de archivos
-import { useTheme, useRutinaId } from '../controllers/controladorContexto';
-import { Articulos } from '../models/modeloArticulos'; // Importa la clase Articulos del modelo
-import { ListaCompra } from '../models/modeloListaCompra'; // Importa la clase ListaCompra del modelo
+import { useTheme } from '../controllers/controladorContexto';
+import { useEditarListaDeLaCompra } from '../controllers/controladorEditarListaDeLaCompra';
 
 export default function EditarListaDeLaCompra() {
-  const {changeLista, lista} = useRutinaId();
-  const navigation = useNavigation();
+  const {
+    articulos,
+    loading,
+    nombreLista,
+    setNombreLista,
+    articulosSeleccionados,
+    toggleArticuloSeleccionado,
+    handleBackPress,
+    handleListoPress
+  } = useEditarListaDeLaCompra();
+
   const { isDarkMode } = useTheme();
   const styles = isDarkMode ? darkStyles : lightStyles;
-
-  const [articulos, setArticulos] = useState([]); // Estado para almacenar los artículos
-  const [loading, setLoading] = useState(true); // Estado para manejar el indicador de carga
-  const [nombreLista, setNombreLista] = useState(''); // Estado para el nombre de la lista de la compra
-  const [articulosSeleccionados, setArticulosSeleccionados] = useState({}); // Estado para los artículos seleccionados
-
-  useEffect(() => {
-    const cargarDatos = async () => {
-      try {
-        // Cargar artículos
-        const articulosRecuperados = await Articulos.getTodosLosArticulos();
-        setArticulos(articulosRecuperados);
-
-        // Cargar la lista de la compra
-        if (lista && lista.id) {
-          const listaRecuperada = await ListaCompra.getListaById(lista.id);
-          setNombreLista(listaRecuperada.nombre);
-
-          // Configurar los artículos seleccionados basados en la lista
-          const articulosSeleccionadosMap = listaRecuperada.articulos.reduce((acc, articulo) => {
-            acc[articulo.id] = true;
-            return acc;
-          }, {});
-          setArticulosSeleccionados(articulosSeleccionadosMap);
-        }
-      } catch (error) {
-        console.error('Error al cargar los datos:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    cargarDatos();
-  }, [lista]);
-
-  const handleBackPress = () => {
-    navigation.navigate('_sitemap');
-  };
-
-  const handleListoPress = async () => {
-    // Debugging: Check the current state
-    console.log('Artículos seleccionados:', articulosSeleccionados);
-    console.log('Todos los artículos:', articulos);
-
-    // Filtrar los artículos seleccionados
-    const articulosParaGuardar = articulos.filter(articulo => articulosSeleccionados[articulo.id]);
-    
-    // Debugging: Check the filtered list
-    console.log('Artículos para guardar:', articulosParaGuardar);
-
-    // Verificar si la lista de artículos a guardar está vacía
-    if (articulosParaGuardar.length === 0) {
-      console.error('No se han seleccionado artículos.');
-      return;
-    }
-    const nuevaLista = new ListaCompra(lista.id, nombreLista, articulosParaGuardar);
-    if (!nuevaLista.nombre) {
-      nuevaLista.nombre = 'nombre';
-    }
-    // Verificar los valores antes de guardar
-    if (nuevaLista.articulos.length > 0) {
-      console.log(`Guardando la lista: ${nuevaLista.nombre} con artículos: ${nuevaLista.articulos.map(a => a.nombre).join(', ')}`);
-    }
-
-    try {
-      console.log('antes de guardar:' + nuevaLista.nombre)
-      await nuevaLista.save();
-      console.log('Lista de la compra guardada con éxito');
-      changeLista(nuevaLista);
-      navigation.navigate('views/ListasDeLaCompra');
-    } catch (error) {
-      console.error('Error al guardar la lista de la compra:', error);
-    }
-  };
-
-  const toggleArticuloSeleccionado = (id) => {
-    setArticulosSeleccionados(prevState => ({
-      ...prevState,
-      [id]: !prevState[id]
-    }));
-  };
 
   return (
     <View style={styles.container}>
@@ -115,7 +41,7 @@ export default function EditarListaDeLaCompra() {
           articulos.map((articulo) => (
             <Articulo
               key={articulo.id}
-              imageSource={{ uri: articulo.imagen }} // Usa la URL de la imagen recuperada
+              imageSource={{ uri: articulo.imagen }}
               nombreArticulo={articulo.nombre}
               checked={articulosSeleccionados[articulo.id] || false}
               onToggle={() => toggleArticuloSeleccionado(articulo.id)}
@@ -129,6 +55,7 @@ export default function EditarListaDeLaCompra() {
     </View>
   );
 }
+
 const lightStyles = StyleSheet.create({
   topComponent: {
     flexDirection: 'row',

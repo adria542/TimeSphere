@@ -1,66 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { useTheme, useRutinaId } from '../controllers/controladorContexto';
-import { Rutina } from '../models/rutina';
 import { MaterialIcons } from '@expo/vector-icons';
 import ContadorDescendente from '../components/contador';
+import { useTheme } from '../controllers/controladorContexto'; // Hook para el tema
+import { useRutinaActivaController } from '../controllers/controladorRutinaActiva'; // Importa el controlador
 
 const RutinaActiva = () => {
-  const { rutinaId } = useRutinaId();
-  const navigation = useNavigation();
   const { isDarkMode } = useTheme();
+  const {
+    actividad,
+    isPlaying,
+    handleBackPress,
+    handlePlayPress,
+    handlePausePress,
+    handleSkipPress
+  } = useRutinaActivaController();
+
   const styles = isDarkMode ? darkStyles : lightStyles;
-  const [actividad, setActividad] = useState(null);
-  const [rutina, setRutina] = useState(null);
-  const [currentActivityIndex, setCurrentActivityIndex] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
-
-  useEffect(() => {
-    const fetchRutina = async () => {
-      const rutinaData = await Rutina.getRutinaPorId(rutinaId);
-      if (rutinaData) {
-        setRutina(rutinaData);
-        if (rutinaData.actividades.length > 0) {
-          setActividad(rutinaData.actividades[0]);
-        }
-      }
-    };
-    fetchRutina();
-  }, [rutinaId]);
-
-  useEffect(() => {
-    if (rutina && rutina.actividades.length > 0) {
-      setActividad(rutina.actividades[currentActivityIndex]);
-    }
-  }, [currentActivityIndex, rutina]);
-
-  const handleBackPress = () => {
-    navigation.navigate('_sitemap');
-  };
-
-  const handlePlayPress = () => {
-    setIsPlaying(true);
-    console.log('Reproducir actividad');
-  };
-
-  const handlePausePress = () => {
-    setIsPlaying(false);
-    console.log('Pausar actividad');
-  };
-
-  const handleSkipPress = async () => {
-    if (rutina && rutina.actividades.length > 0) {
-      const nextIndex = (currentActivityIndex + 1) % rutina.actividades.length;
-      if (nextIndex === 0) {
-        navigation.navigate('_sitemap');
-      } else {
-        setCurrentActivityIndex(nextIndex);
-        setActividad(rutina.actividades[nextIndex]);
-      }
-      setIsPlaying(false); // Detiene el contador al saltar a la siguiente actividad
-    }
-  };
 
   return (
     <View style={styles.container}>
@@ -80,7 +36,6 @@ const RutinaActiva = () => {
           <ContadorDescendente
             duracion={actividad.duracion * 60}
             isPlaying={isPlaying}
-            index = {currentActivityIndex}
             onFinish={handleSkipPress}
           />
         </>

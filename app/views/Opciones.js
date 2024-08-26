@@ -1,26 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import Checkbox from 'expo-checkbox'; // Asegúrate de instalar expo-checkbox
 import { useNavigation } from '@react-navigation/native';
-import { useTheme } from '../controllers/controladorContexto'; // Asegúrate de tener este hook correctamente implementado
+import { useOpcionesController } from '../controllers/controladorOpciones'; // Importa el controlador
 
 const Opciones = () => {
   const navigation = useNavigation();
-  const { isDarkMode, toggleTheme } = useTheme(); // Usa el contexto para obtener el estado del modo oscuro
-
-  // Estados para manejar los checkboxes
-  const [vibracion, setVibracion] = useState(true);
-  const [sonido, setSonido] = useState(true);
-  const [modoOscuro, setModoOscuro] = useState(isDarkMode);
+  const {
+    vibracion,
+    setVibracion,
+    sonido,
+    setSonido,
+    isDarkMode,
+    handleModoOscuroChange
+  } = useOpcionesController();
 
   // Maneja el toque en el botón "Volver"
   const handleBackPress = () => {
     navigation.navigate('_sitemap');
-  };
-
-  // Actualiza el estado del modo oscuro localmente
-  const handleModoOscuroChange = (value) => {
-    toggleTheme();
   };
 
   // Definición de estilos basada en el modo oscuro
@@ -130,7 +127,7 @@ const darkStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    padding:10,
+    padding: 10,
     paddingTop: 80,
     paddingBottom: 20,
     width: '100%',
