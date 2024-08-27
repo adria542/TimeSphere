@@ -4,13 +4,13 @@ import Supermercado from '../components/supermercados';
 import Compra from '../components/compra';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
-import { useTheme, useRutinaId } from '../controllers/controladorContexto';
+import { useTheme, useShortSpan} from '../controllers/controladorContexto';
 import { useSupermercadosController } from '../controllers/supermercadosController';
 import { ListaCompra } from '../models/modeloListaCompra';
 
 export default function Supermercados() {
   const [ubicacionInicial, setUbicacionInicial] = useState({latitude: 39.2855, longitude: 0.2128});
-  const { lista, changeLista } = useRutinaId();
+  const { lista, changeLista } = useShortSpan();
   const [selectedButton, setSelectedButton] = useState('left'); // Estado para seguir el botón seleccionado
   const { listasCompra, supermercados, loading, cargarDatos } = useSupermercadosController(ubicacionInicial);
   const navigation = useNavigation();

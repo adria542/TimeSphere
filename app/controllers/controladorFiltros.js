@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { useRutinaId } from './controladorContexto';
+import { useShortSpan } from './controladorContexto';
 
 export function useFiltros() {
   const navigation = useNavigation();
-  const { filtros, changeFiltros } = useRutinaId(); // Obtener filtros del contexto
+  const { filtros, changeFiltros } = useShortSpan(); // Obtener filtros del contexto
   const [checkedItems, setCheckedItems] = useState({});
 
   // Tipos de accesibilidad

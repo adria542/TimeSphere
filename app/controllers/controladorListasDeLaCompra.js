@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { ListaCompra } from '../models/modeloListaCompra';
-import { useRutinaId } from '../controllers/controladorContexto';
+import { useShortSpan } from '../controllers/controladorContexto';
 
 export function useListasDeLaCompraController() {
-  const { lista } = useRutinaId();
+  const { lista } = useShortSpan();
   const [articulos, setArticulos] = useState([]);
   const [seleccionados, setSeleccionados] = useState(new Set());
 
