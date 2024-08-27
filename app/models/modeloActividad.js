@@ -1,6 +1,6 @@
 import { db } from '../components/FireBase'; // Asegúrate de ajustar la ruta según la estructura de tu proyecto
 import { doc, getDoc, setDoc, collection, getDocs } from 'firebase/firestore';
-import { Rutina } from './rutina';
+import { Rutina } from './modeloRutina';
 
 export class Actividad {
   constructor(id, nombre, tipo, imagen, duracion) {

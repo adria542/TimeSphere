@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { useTheme, useDay, useRutinaId } from '../controllers/controladorContexto';
-import { Rutina } from '../models/rutina'; // Asegúrate de que esta ruta sea correcta
+import { Rutina } from '../models/modeloRutina'; // Asegúrate de que esta ruta sea correcta
 import { Notificacion } from '../models/modeloNotificacion';
 
 export function useRutinasController() {

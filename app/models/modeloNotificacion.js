@@ -1,6 +1,6 @@
 import { db } from '../components/FireBase'; 
 import { doc, getDoc, setDoc, collection, getDocs } from 'firebase/firestore';
-import { Rutina } from './rutina';
+import { Rutina } from './modeloRutina';
 
 export class Notificacion {
   constructor(id, activa, sonido, vibracion, titulo) {

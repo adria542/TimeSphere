@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
-import { Rutina } from '../models/rutina';
+import { Rutina } from '../models/modeloRutina';
 import { Actividad } from '../models/modeloActividad';
 import { useDay } from '../controllers/controladorContexto';
 import { useRutinaId } from '../controllers/controladorContexto';
