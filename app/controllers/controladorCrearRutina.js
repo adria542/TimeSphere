@@ -1,11 +1,11 @@
 // controladorCrearRutina.js
 
 import { useNavigation } from '@react-navigation/native';
-import { useDay, useRutinaId } from './controladorContexto';
-import { Rutina } from '../models/rutina';
+import { useDay, useShortSpan } from './controladorContexto';
+import { Rutina } from '../models/modeloRutina';
 
 export function useCrearRutinaController() {
-  const { changeNotificacion, rutinaId, notificacion } = useRutinaId();
+  const { changeNotificacion, rutinaId, notificacion } = useShortSpan();
   const { selectedDay } = useDay();
   const navigation = useNavigation();
 

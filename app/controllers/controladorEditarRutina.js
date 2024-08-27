@@ -1,11 +1,11 @@
 // useEditarRutina.js
 import { useState, useEffect } from 'react';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
-import { useRutinaId, useDay } from '../controllers/controladorContexto';
-import { Rutina } from '../models/rutina'; // Importa el modelo Rutina
+import { useShortSpan, useDay } from '../controllers/controladorContexto';
+import { Rutina } from '../models/modeloRutina'; // Importa el modelo Rutina
 
 export function useEditarRutina() {
-  const { rutinaId, changeStateTrue, changeStateFalse, changeActividad, changeNotificacion } = useRutinaId();
+  const { rutinaId, changeStateTrue, changeStateFalse, changeActividad, changeNotificacion } = useShortSpan();
   const { selectedDay } = useDay();
   const navigation = useNavigation();
   const isFocused = useIsFocused();

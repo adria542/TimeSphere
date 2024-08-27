@@ -1,11 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
-import { useTheme, useDay, useRutinaId } from '../controllers/controladorContexto';
+import { useTheme, useDay, useShortSpan } from '../controllers/controladorContexto';
 import { Rutina } from '../models/modeloRutina'; // Asegúrate de que esta ruta sea correcta
 import { Notificacion } from '../models/modeloNotificacion';
 
 export function useRutinasController() {
-  const { changeRutina, changeNotificacion } = useRutinaId();
+  const { changeRutina, changeNotificacion } = useShortSpan();
   const { selectedDay } = useDay();
   const navigation = useNavigation();
   const isFocused = useIsFocused();

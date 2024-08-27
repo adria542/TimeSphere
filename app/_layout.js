@@ -16,9 +16,8 @@ import EditarRutina from './views/EditarRutina';
 import EditarActividad from './views/EditarActividad';
 import EditarNotificacion from './views/EditarNotificacion';
 import EditarListaDeLaCompra from './views/EditarListaDeLaCompra';
-import { ThemeProvider, useTheme } from './controllers/controladorContexto'; // Asegúrate de que la ruta es correcta
-import { DayProvider } from './controllers/controladorContexto';
-import { RutinaProvider } from './controllers/controladorContexto';
+import { ThemeProvider, DayProvider, ShortSpanProvider, useTheme } from './controllers/controladorContexto';
+
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -57,7 +56,7 @@ export default function RootLayout() {
   return (
     <DayProvider>
       <ThemeProvider>
-        <RutinaProvider>
+        <ShortSpanProvider>
           <Stack.Navigator screenOptions={{ headerShown: false }}>
             <Stack.Screen name="_sitemap" component={TabNavigator} />
             <Stack.Screen name="views/rutinaActiva" component={RutinaActiva} />
@@ -74,7 +73,7 @@ export default function RootLayout() {
             <Stack.Screen name="views/EditarNotificacion" component={EditarNotificacion} />
             <Stack.Screen name="views/EditarListaDeLaCompra" component={EditarListaDeLaCompra} />
           </Stack.Navigator>
-        </RutinaProvider>
+        </ShortSpanProvider>
       </ThemeProvider>
     </DayProvider>
   );

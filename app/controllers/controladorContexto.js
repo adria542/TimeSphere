@@ -37,9 +37,9 @@ export const DayProvider = ({ children }) => {
   );
 };
 
-const RutinaContext = createContext();
+const ShortSpanContext = createContext();
 
-export const RutinaProvider = ({ children }) => {
+export const ShortSpanProvider = ({ children }) => {
   const [actividadId, setActividadId]= useState(false);
   const [editandoActividad, setEditandoActividad]= useState(false);
   const [rutinaId, setRutinaId] = useState(null); // Por defecto, el día actual
@@ -68,12 +68,12 @@ export const RutinaProvider = ({ children }) => {
     setFiltros(filtros);
   };
   return (
-    <RutinaContext.Provider value={{ rutinaId, editandoActividad, actividadId, notificacion, lista, filtros, changeFiltros, changeLista, changeNotificacion, changeActividad, changeStateTrue, changeStateFalse, changeRutina}}>
+    <ShortSpanContext.Provider value={{ rutinaId, editandoActividad, actividadId, notificacion, lista, filtros, changeFiltros, changeLista, changeNotificacion, changeActividad, changeStateTrue, changeStateFalse, changeRutina}}>
       {children}
-    </RutinaContext.Provider>
+    </ShortSpanContext.Provider>
   );
 };
 
-export const useRutinaId = () => useContext(RutinaContext);
+export const useShortSpan = () => useContext(ShortSpanContext);
 export const useDay = () => useContext(DayContext);
 export const useTheme = () => useContext(ThemeContext);

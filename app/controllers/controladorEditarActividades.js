@@ -5,11 +5,11 @@ import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { Rutina } from '../models/modeloRutina';
 import { Actividad } from '../models/modeloActividad';
 import { useDay } from '../controllers/controladorContexto';
-import { useRutinaId } from '../controllers/controladorContexto';
+import { useShortSpan } from '../controllers/controladorContexto';
 
 export function useEditarActividad() {
   const { selectedDay } = useDay();
-  const { rutinaId, editandoActividad, actividadId } = useRutinaId();
+  const { rutinaId, editandoActividad, actividadId } = useShortSpan();
   const [titulo, setTitulo] = useState('');
   const [duracion, setDuracion] = useState('');
   const [tipoActividad, setTipoActividad] = useState('Deporte');

@@ -3,13 +3,13 @@
 import { useState, useCallback, useEffect } from 'react';
 import { Supermercado as SupermercadoModel } from '../models/modeloSupermercado';
 import { ListaCompra } from '../models/modeloListaCompra';
-import { useRutinaId } from './controladorContexto';
+import { useShortSpan } from './controladorContexto';
 
 export function useSupermercadosController(ubicacionInicial) {
   const [listasCompra, setListasCompra] = useState([]);
   const [supermercados, setSupermercados] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { filtros } = useRutinaId(); // Obtener filtros del contexto
+  const { filtros } = useShortSpan(); // Obtener filtros del contexto
 
   const cargarDatos = useCallback(async () => {
     setLoading(true);

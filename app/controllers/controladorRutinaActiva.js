@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { useRutinaId } from '../controllers/controladorContexto';
-import { Rutina } from '../models/rutina'; // Asegúrate de que esta ruta sea correcta
+import { useShortSpan } from '../controllers/controladorContexto';
+import { Rutina } from '../models/modeloRutina'; // Asegúrate de que esta ruta sea correcta
 
 export function useRutinaActivaController() {
-  const { rutinaId } = useRutinaId();
+  const { rutinaId } = useShortSpan();
   const navigation = useNavigation();
   const [actividad, setActividad] = useState(null);
   const [rutina, setRutina] = useState(null);

@@ -3,13 +3,13 @@
 import { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { Notificacion } from '../models/modeloNotificacion';
-import { useRutinaId } from '../controllers/controladorContexto';
+import { useShortSpan } from '../controllers/controladorContexto';
 
 export function useEditarNotificacion() {
   const [textoNotificacion, setTextoNotificacion] = useState('');
   const [sonidoActivado, setSonidoActivado] = useState(false);
   const [vibracionActivada, setVibracionActivada] = useState(false);
-  const { changeNotificacion, notificacion } = useRutinaId();
+  const { changeNotificacion, notificacion } = useShortSpan();
   const navigation = useNavigation();
 
   useEffect(() => {

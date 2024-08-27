@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { Articulos } from '../models/modeloArticulos';
 import { ListaCompra } from '../models/modeloListaCompra';
-import { useRutinaId } from '../controllers/controladorContexto';
+import { useShortSpan } from '../controllers/controladorContexto';
 
 export function useEditarListaDeLaCompra() {
-  const { changeLista, lista } = useRutinaId();
+  const { changeLista, lista } = useShortSpan();
   const [articulos, setArticulos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [nombreLista, setNombreLista] = useState('');
