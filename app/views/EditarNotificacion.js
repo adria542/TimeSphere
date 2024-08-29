@@ -133,7 +133,7 @@ const darkStyles = StyleSheet.create({
     marginBottom: 20,
   },
   backButtonText: {
-    color: '#007BFF',
+    color: '#BB86FC',
     fontSize: 16,
   },
   title: {
@@ -167,7 +167,7 @@ const darkStyles = StyleSheet.create({
     backgroundColor: '#333',
   },
   doneButton: {
-    backgroundColor: '#007BFF',
+    backgroundColor: '#BB86FC',
     padding: 15,
     borderRadius: 5,
     alignItems: 'center',

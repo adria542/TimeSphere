@@ -16,7 +16,7 @@ export function useEditarActividad() {
   const isFocused = useIsFocused(); // Hook para saber si la pantalla está enfocada
   const navigation = useNavigation();
 
-  const tiposActividad = ['Deporte', 'Estudio', 'Relajación', 'Trabajo'];
+  const tiposActividad = ['Deporte', 'Estudio', 'Relajación', 'Trabajo', 'Higiene'];
 
   useEffect(() => {
     if (editandoActividad && isFocused) {

@@ -184,13 +184,13 @@ const darkStyles = StyleSheet.create({
     marginBottom: 20,
   },
   addButton: {
-    backgroundColor: '#007BFF',
+    backgroundColor: '#BB86FC',
     padding: 15,
     borderRadius: 5,
     alignItems: 'center',
   },
   playButton: {
-    backgroundColor: '#28A745',
+    backgroundColor: '#03DAC6',
     padding: 15,
     borderRadius: 5,
     alignItems: 'center',

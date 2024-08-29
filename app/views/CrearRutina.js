@@ -34,7 +34,7 @@ export default function CrearRutina() {
     };
 
     fetchData();
-  }, [cargarDatosRutina]);
+  }, []);
 
   const onChangeHora = (event, selectedDate) => {
     const currentDate = selectedDate || horaInicio;

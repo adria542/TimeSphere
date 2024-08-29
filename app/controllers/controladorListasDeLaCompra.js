@@ -4,13 +4,16 @@ import { useShortSpan } from '../controllers/controladorContexto';
 
 export function useListasDeLaCompraController() {
   const { lista } = useShortSpan();
+  const [titulo, setTitulo] = useState("Lista de la compra")
   const [articulos, setArticulos] = useState([]);
   const [seleccionados, setSeleccionados] = useState(new Set());
 
   // Cargar los artículos de la lista de compra cuando la lista cambie
   useEffect(() => {
     if (lista) {
+      console.log(lista);
       setArticulos(lista.articulos || []);
+      setTitulo(lista.nombre || "lista de la compra")
       // Restaurar el estado de los artículos seleccionados si es necesario
     } else {
       setArticulos([]);
@@ -33,6 +36,7 @@ export function useListasDeLaCompraController() {
   return {
     articulos,
     seleccionados,
+    titulo,
     toggleArticulo
   };
 }

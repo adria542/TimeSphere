@@ -105,7 +105,7 @@ const darkStyles = StyleSheet.create({
   },
   typeContainer: {
     borderRadius: 5,
-    backgroundColor: '#1E90FF', // Azul brillante
+    backgroundColor: '#BB86FC', // Azul brillante
     paddingHorizontal: 10,
     paddingVertical: 5,
     marginLeft: 10,

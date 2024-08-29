@@ -25,11 +25,6 @@ export default function EditarActividad() {
       <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>
         <Text style={styles.backButtonText}>Volver</Text>
       </TouchableOpacity>
-
-      <Image
-        source={{ uri: 'https://via.placeholder.com/150' }} // Imagen de ejemplo
-        style={styles.image}
-      />
       
       <Text style={styles.label}>Título de la Actividad:</Text>
       <TextInput
@@ -86,6 +81,7 @@ const lightStyles = StyleSheet.create({
   backButtonText: {
     color: '#007BFF',
     fontSize: 16,
+    marginBottom: 20,
   },
   image: {
     width: '100%',
@@ -141,7 +137,7 @@ const darkStyles = StyleSheet.create({
     backgroundColor: '#121212',
   },
   backButton: {
-    marginBottom: 20,
+    marginBottom: 30,
   },
   backButtonText: {
     color: '#BB86FC',

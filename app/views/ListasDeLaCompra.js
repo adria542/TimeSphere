@@ -7,7 +7,7 @@ import { useListasDeLaCompraController } from '../controllers/controladorListasD
 
 export default function ListasDeLaCompra() {
   const navigation = useNavigation();
-  const { articulos, seleccionados, toggleArticulo } = useListasDeLaCompraController();
+  const { articulos, seleccionados, titulo, toggleArticulo } = useListasDeLaCompraController();
   const { isDarkMode } = useTheme();
   const styles = isDarkMode ? darkStyles : lightStyles;
 
@@ -26,7 +26,7 @@ export default function ListasDeLaCompra() {
           <Text style={styles.backButtonText}>Volver</Text>
         </TouchableOpacity>
       </View>
-      <Text style={styles.titulo}>Lista de la Compra</Text>
+      <Text style={styles.titulo}>{titulo}</Text>
       <ScrollView style={styles.articulosContainer}>
         {articulos.length > 0 ? (
           articulos.map((articulo) => (
