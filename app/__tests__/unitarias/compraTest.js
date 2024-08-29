@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
-import Compra from '../../components/Compra';
+import Compra from '../../components/compra';
 import { useTheme } from '../../controllers/controladorContexto';
 
 // Mock del hook useTheme

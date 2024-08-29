@@ -32,16 +32,16 @@ describe('DaySelector', () => {
     const { getByText } = render(<DaySelector />);
 
     // Verifica que los días se renderizan
-    expect(getByText('lun 26')).toBeTruthy();
     expect(getByText('mar 27')).toBeTruthy();
     expect(getByText('mié 28')).toBeTruthy();
     expect(getByText('jue 29')).toBeTruthy();
     expect(getByText('vie 30')).toBeTruthy();
     expect(getByText('sáb 31')).toBeTruthy();
     expect(getByText('dom 1')).toBeTruthy();
+    expect(getByText('lun 2')).toBeTruthy();
 
     // Verifica el estilo del día seleccionado
-    const selectedDayText = getByText('mié 28');
+    const selectedDayText = getByText('jue 29');
     expect(selectedDayText.props.style).toEqual(expect.arrayContaining([{
       color: '#007BFF',
       fontWeight: 'bold',
@@ -93,7 +93,7 @@ describe('DaySelector', () => {
     const { getByText } = render(<DaySelector />);
 
     // Verifica que el estilo se aplica en modo oscuro
-    const selectedDayText = getByText('mié 28');
+    const selectedDayText = getByText('jue 29');
     expect(selectedDayText.props.style).toEqual(expect.arrayContaining([{
       color: '#BB86FC',
       fontWeight: 'bold',

@@ -20,8 +20,8 @@ export class DiarioModelo {
         const data = doc.data();
         diarios.push(new DiarioModelo(
           doc.id,
-          data.estadoEmocional || 0,  // Usamos 0 como valor por defecto si no se encuentra un estado emocional
-          data.entradaDiario || ''   // Usamos una cadena vacía si no se encuentra una entrada de diario
+          data.estadoEmocional || 0,
+          data.entradaDiario || '' 
         ));
       });
     } else {
@@ -34,7 +34,7 @@ export class DiarioModelo {
   // Formatea la fecha a 'yyyy-mm-dd'
   static formatDate(date) {
     const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Meses empiezan en 0
+    const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
   }
@@ -48,9 +48,9 @@ export class DiarioModelo {
     const dateDocSnap = await getDoc(dateDocRef);
   
     if (!dateDocSnap.exists()) {
-      // Si el documento del día no existe, crearlo con un objeto vacío o con algún dato inicial
+      // Si el documento del día no existe, crearlo con un objeto vacío
       try {
-        await setDoc(dateDocRef, {}); // Puedes agregar datos iniciales si es necesario
+        await setDoc(dateDocRef, {});
       } catch (error) {
         console.error(`Error al crear el documento para el día ${formattedDate}:`, error);
         return;
@@ -59,7 +59,6 @@ export class DiarioModelo {
       console.log(`Documento para el día ${formattedDate} ya existe.`);
     }
 
-    // Ahora guardar el diario en la subcolección 'diario'
     const diarioRef = doc(db, `TimeSphere/${formattedDate}/diario`, this.id);
     try {
       await setDoc(diarioRef, {
