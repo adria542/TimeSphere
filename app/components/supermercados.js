@@ -7,9 +7,9 @@ const Supermercado = ({ nombre, direccion, etiquetas }) => {
   const styles = isDarkMode ? darkStyles : lightStyles;
 
   return (
-    <View style={styles.supermercadoContainer}>
-      <Text style={styles.nombre}>{nombre}</Text>
-      <Text style={styles.direccion}>{direccion}</Text>
+    <View style={styles.supermercadoContainer} testID='SupermercadoContainer'>
+      <Text style={styles.nombre} testID='nombre'>{nombre}</Text>
+      <Text style={styles.direccion} testID='Dirección'>{direccion}</Text>
       <FlatList
         data={etiquetas}
         renderItem={({ item }) => <Text style={styles.etiqueta}>{item}</Text>}

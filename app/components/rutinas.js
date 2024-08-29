@@ -7,8 +7,8 @@ const RutinaComponent = ({ titulo, hora, imagen, onPress }) => {
   const styles = isDarkMode ? darkStyles : lightStyles;
 
   return (
-    <TouchableOpacity onPress={onPress} style={styles.rutinaContainer}>
-      <Image source={{ uri: imagen }} style={styles.imagen} />
+    <TouchableOpacity onPress={onPress} style={styles.rutinaContainer} testID = 'rutina-container'>
+      <Image source={{ uri: imagen }} style={styles.imagen} testID = 'rutina-image'/>
       <View style={styles.textContainer}>
         <Text style={styles.titulo}>{titulo}</Text>
         <Text style={styles.hora}>{hora}</Text>

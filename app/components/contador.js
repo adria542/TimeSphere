@@ -1,3 +1,5 @@
+// components/ContadorDescendente.js
+
 import React, { useEffect, useState } from 'react';
 import { Text, StyleSheet, View } from 'react-native';
 import { useTheme } from '../controllers/controladorContexto';
@@ -9,11 +11,8 @@ const ContadorDescendente = ({ duracion, isPlaying, onFinish, index }) => {
 
   useEffect(() => {
     setTiempoRestante(duracion); // Reinicia el contador cuando cambie la duración
-  }, [index]);
+  }, [index, duracion]);
 
-  const reset = () => {
-    setTiempoRestante(duracion);
-  }
   useEffect(() => {
     let intervalo;
 
@@ -44,8 +43,8 @@ const ContadorDescendente = ({ duracion, isPlaying, onFinish, index }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>{formatTiempo(tiempoRestante)}</Text>
+    <View style={styles.container} testID="contador-container">
+      <Text style={styles.text} testID="contador-text">{formatTiempo(tiempoRestante)}</Text>
     </View>
   );
 };

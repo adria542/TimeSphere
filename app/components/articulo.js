@@ -4,17 +4,24 @@ import Checkbox from 'expo-checkbox'; // Asegúrate de instalar expo-checkbox
 import { useTheme } from '../controllers/controladorContexto';
 
 export default function Articulo({ imageSource, nombreArticulo, checked, onToggle }) {
-  const { isDarkMode } = useTheme();
+  const { isDarkMode } = useTheme() || false;
   const styles = isDarkMode ? darkStyles : lightStyles;
 
   return (
     <TouchableOpacity style={styles.container} onPress={onToggle}>
-      <Image source={imageSource} style={styles.image} />
-      <Text style={styles.nombre}>{nombreArticulo}</Text>
+      <Image 
+        source={imageSource} 
+        style={styles.image} 
+        testID="articulo-imagen" // Añade testID a la imagen
+      />
+      <Text style={styles.nombre}>
+        {nombreArticulo}
+      </Text>
       <Checkbox
         value={checked}
         onValueChange={onToggle}
         style={styles.checkbox}
+        testID="articulo-checkbox" // Añade testID al checkbox
       />
     </TouchableOpacity>
   );

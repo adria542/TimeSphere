@@ -1,3 +1,5 @@
+// components/Compra.js
+
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useTheme } from '../controllers/controladorContexto';
@@ -7,7 +9,11 @@ const Compra = ({ titulo, onPress }) => {
   const styles = isDarkMode ? darkStyles : lightStyles;
 
   return (
-    <TouchableOpacity style={styles.compraContainer} onPress={onPress}>
+    <TouchableOpacity 
+      style={styles.compraContainer} 
+      onPress={onPress}
+      testID="compra-container" // Añadido testID para pruebas
+    >
       <Text style={styles.titulo}>{titulo}</Text>
     </TouchableOpacity>
   );
